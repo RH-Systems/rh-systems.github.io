@@ -44,11 +44,11 @@ margin:auto;
 /* ===== NAVIGATION ===== */
 
 header{
-position:fixed;
+/* position:fixed;          ← removed */
 width:100%;
 background:white;
 box-shadow:0 2px 8px rgba(0,0,0,0.05);
-z-index:1000;
+/* z-index:1000;            ← removed */
 }
 
 nav{
@@ -84,7 +84,7 @@ color:var(--accent);
 /* ===== HERO ===== */
 
 .hero{
-padding:180px 0 120px;
+padding:180px 0 120px;   /* ← you may want to reduce this padding now */
 background:var(--primary);
 color:white;
 text-align:center;
