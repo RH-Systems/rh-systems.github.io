@@ -3,108 +3,336 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RH²-Systems</title>
+
+<title>RH²-Systems | Cyber Security & Software Engineering</title>
+<meta name="description" content="RH²-Systems provides professional cybersecurity consulting, ethical hacking, penetration testing, and modern software engineering solutions.">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-/* Basic Reset & Body */
-body { margin:0; font-family:'Roboto',sans-serif; background:#0d1117; color:#c9d1d9; scroll-behavior:smooth;}
-section {padding:80px 20px; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
-.navbar {position:fixed; top:0; width:100%; display:flex; justify-content:space-between; padding:20px; background:#161b22; z-index:100;}
-.navbar a {color:#00f0ff; margin:0 10px; text-decoration:none; transition:0.3s;}
-.navbar a:hover {color:#0d1117; background:#00c0cc; border-radius:5px; padding:5px 10px;}
-.hero {background:linear-gradient(135deg,#0f2027,#203a43,#2c5364); width:100%; color:#00f0ff; }
-.hero h1{font-size:3rem;}
-.btn {padding:10px 25px; margin:5px; border:none; border-radius:5px; background:#00f0ff; color:#0d1117; font-weight:bold; cursor:pointer; transition:0.3s;}
-.btn:hover{transform:scale(1.05); background:#00c0cc;}
-.fade-in{opacity:0; transform:translateY(50px); animation:fadeIn 1s forwards;}
-@keyframes fadeIn{to{opacity:1; transform:translateY(0);}}
-.services,.portfolio{display:flex; flex-wrap:wrap; justify-content:center; gap:30px;}
-.service,.project{width:220px; padding:20px; background:#161b22; border-radius:10px; transition:0.3s;}
-.service:hover,.project:hover{transform:translateY(-10px); background:#0a1f2b;}
-.project span{display:block; margin-top:10px;}
-footer{padding:30px; text-align:center; background:#0a0f14; margin-top:20px;}
+
+/* ===== GLOBAL ===== */
+
+:root{
+--primary:#0b1f3a;
+--accent:#0056ff;
+--light:#f4f7fb;
+--dark:#1a1a1a;
+--gray:#6b7280;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:var(--light);
+color:var(--dark);
+line-height:1.6;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+/* ===== NAVIGATION ===== */
+
+header{
+position:fixed;
+width:100%;
+background:white;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+z-index:1000;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 0;
+}
+
+.logo{
+font-weight:700;
+font-size:20px;
+color:var(--primary);
+}
+
+nav ul{
+list-style:none;
+display:flex;
+gap:30px;
+}
+
+nav a{
+text-decoration:none;
+color:var(--dark);
+font-weight:500;
+transition:0.3s;
+}
+
+nav a:hover{
+color:var(--accent);
+}
+
+/* ===== HERO ===== */
+
+.hero{
+padding:180px 0 120px;
+background:var(--primary);
+color:white;
+text-align:center;
+}
+
+.hero h1{
+font-size:42px;
+margin-bottom:20px;
+}
+
+.hero p{
+font-size:18px;
+max-width:700px;
+margin:auto;
+opacity:0.9;
+}
+
+.btn{
+display:inline-block;
+margin-top:30px;
+padding:14px 28px;
+background:var(--accent);
+color:white;
+border-radius:6px;
+text-decoration:none;
+font-weight:600;
+transition:0.3s;
+}
+
+.btn:hover{
+background:#003bb3;
+}
+
+/* ===== SECTIONS ===== */
+
+section{
+padding:100px 0;
+}
+
+.section-title{
+text-align:center;
+margin-bottom:60px;
+}
+
+.section-title h2{
+font-size:32px;
+margin-bottom:10px;
+color:var(--primary);
+}
+
+.section-title p{
+color:var(--gray);
+}
+
+/* ===== GRID ===== */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:40px;
+}
+
+.card{
+background:white;
+padding:35px;
+border-radius:8px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.card h3{
+margin-bottom:15px;
+color:var(--primary);
+}
+
+/* ===== CONTACT ===== */
+
+.contact-box{
+background:white;
+padding:50px;
+border-radius:8px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+max-width:700px;
+margin:auto;
+}
+
+.contact-box input,
+.contact-box textarea{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+.contact-box button{
+width:100%;
+padding:14px;
+background:var(--accent);
+color:white;
+border:none;
+border-radius:6px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.contact-box button:hover{
+background:#003bb3;
+}
+
+/* ===== FOOTER ===== */
+
+footer{
+background:var(--primary);
+color:white;
+padding:40px 0;
+text-align:center;
+margin-top:60px;
+}
+
+footer p{
+opacity:0.8;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:768px){
+nav ul{
+gap:15px;
+}
+.hero h1{
+font-size:30px;
+}
+}
+
 </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="logo">RH²-Systems</div>
-  <div>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#portfolio">Portfolio</a>
-    <a href="#contact">Contact</a>
-  </div>
+<header>
+<div class="container">
+<nav>
+<div class="logo">RH²-Systems</div>
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
 </nav>
+</div>
+</header>
 
-<!-- Hero Section -->
-<section id="home" class="hero fade-in">
-  <h1>RH²-Systems</h1>
-  <p>Securing your digital world & building innovative tech solutions</p>
-  <a href="#contact" class="btn">Contact Us</a>
-  <a href="#services" class="btn">View Services</a>
+<!-- HERO -->
+<section class="hero" id="home">
+<div class="container">
+<h1>Enterprise Cyber Security & Software Engineering</h1>
+<p>RH²-Systems delivers professional penetration testing, ethical hacking, system security audits, and scalable modern software solutions for businesses and organizations.</p>
+<a href="#contact" class="btn">Request Consultation</a>
+</div>
 </section>
 
-<!-- About Section -->
-<section id="about" class="fade-in">
-  <h2>About Us</h2>
-  <p><strong>Raj Hridoy</strong> - Cybersecurity & Programming Expert</p>
-  <p><strong>Riyad Hasan</strong> - Tech & Ethical Hacking Specialist</p>
+<!-- SERVICES -->
+<section id="services">
+<div class="container">
+<div class="section-title">
+<h2>Our Services</h2>
+<p>Professional solutions tailored for modern digital infrastructure.</p>
+</div>
+
+<div class="grid">
+<div class="card">
+<h3>Penetration Testing</h3>
+<p>Comprehensive vulnerability assessment and controlled exploitation to identify security weaknesses.</p>
+</div>
+
+<div class="card">
+<h3>Security Auditing</h3>
+<p>In-depth review of infrastructure, applications, and systems to ensure compliance and resilience.</p>
+</div>
+
+<div class="card">
+<h3>Secure Web Development</h3>
+<p>Modern, scalable, and secure web applications engineered with industry best practices.</p>
+</div>
+
+<div class="card">
+<h3>Custom Software Solutions</h3>
+<p>Business-grade systems tailored to operational and security requirements.</p>
+</div>
+</div>
+</div>
 </section>
 
-<!-- Services Section -->
-<section id="services" class="fade-in">
-  <h2>Our Services</h2>
-  <div class="services">
-    <div class="service"><h3>Cybersecurity</h3><p>Security audits & consulting</p></div>
-    <div class="service"><h3>Ethical Hacking</h3><p>Pen testing & vulnerability checks</p></div>
-    <div class="service"><h3>Web Development</h3><p>Custom websites & apps</p></div>
-    <div class="service"><h3>Tech Solutions</h3><p>Custom software & tools</p></div>
-  </div>
+<!-- ABOUT -->
+<section id="about">
+<div class="container">
+<div class="section-title">
+<h2>About RH²-Systems</h2>
+<p>Security-driven engineering with professional standards.</p>
+</div>
+
+<div class="grid">
+<div class="card">
+<h3>Raj Hridoy</h3>
+<p>Cybersecurity Engineer & Software Developer specializing in secure architecture and vulnerability analysis.</p>
+</div>
+
+<div class="card">
+<h3>Riyad Hasan</h3>
+<p>Ethical Hacker & Technology Specialist focused on system defense, threat modeling, and penetration testing.</p>
+</div>
+</div>
+</div>
 </section>
 
-<!-- Portfolio Section -->
-<section id="portfolio" class="fade-in">
-  <h2>Portfolio</h2>
-  <div class="portfolio">
-    <div class="project"><h3>Project 1</h3><span>Website Design</span></div>
-    <div class="project"><h3>Project 2</h3><span>Security Audit</span></div>
-    <div class="project"><h3>Project 3</h3><span>Custom App</span></div>
-  </div>
+<!-- CONTACT -->
+<section id="contact">
+<div class="container">
+<div class="section-title">
+<h2>Contact Us</h2>
+<p>Start a secure conversation today.</p>
+</div>
+
+<div class="contact-box">
+<form action="https://formspree.io/f/yourFormID" method="POST">
+<input type="text" name="name" placeholder="Full Name" required>
+<input type="email" name="email" placeholder="Email Address" required>
+<textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+<button type="submit">Send Message</button>
+</form>
+
+<p style="margin-top:20px;font-size:14px;color:#6b7280;">
+Direct Email: rajhridoy100az@gmail.com | reyadhasan100az@gmail.com
+</p>
+</div>
+</div>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="fade-in">
-  <h2>Contact Us</h2>
-  <p>Raj Hridoy: rajhridoy100az@gmail.com</p>
-  <p>Riyad Hasan: reyadhasan100az@gmail.com</p>
-  <form action="https://formspree.io/f/yourFormID" method="POST">
-    <input type="text" name="name" placeholder="Your Name" required><br><br>
-    <input type="email" name="email" placeholder="Your Email" required><br><br>
-    <textarea name="message" placeholder="Your Message" required></textarea><br><br>
-    <button type="submit" class="btn">Send Message</button>
-  </form>
-</section>
-
-<!-- Footer -->
 <footer>
-  &copy; 2026 RH²-Systems
+<p>© 2026 RH²-Systems. All rights reserved.</p>
 </footer>
 
-<script>
-// Fade-in effect
-const faders = document.querySelectorAll('.fade-in');
-const appearOptions = {threshold:0.1, rootMargin:"0px"};
-const appearOnScroll = new IntersectionObserver(function(entries, observer){
-  entries.forEach(entry=>{
-    if(!entry.isIntersecting) return;
-    entry.target.style.opacity=1;
-    entry.target.style.transform='translateY(0)';
-    observer.unobserve(entry.target);
-  });
-}, appearOptions);
-faders.forEach(fader=>appearOnScroll.observe(fader));
-</script>
 </body>
 </html>
