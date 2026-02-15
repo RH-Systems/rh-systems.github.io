@@ -5,16 +5,12 @@
 
 <title>RH²-Systems | Enterprise Cybersecurity & Offensive Security</title>
 
-<meta name="description" content="RH²-Systems delivers enterprise-grade cybersecurity consulting, penetration testing, red teaming, and secure software engineering.">
-<meta name="keywords" content="Enterprise Cybersecurity, Penetration Testing, Red Team, Secure Development, Zero Trust, ISO 27001">
+<meta name="description" content="RH²-Systems delivers enterprise-grade cybersecurity consulting, penetration testing, and red teaming.">
+<meta name="keywords" content="Cybersecurity, Pentesting, Red Team, Zero Trust, SOC 2">
 <meta name="author" content="RH²-Systems">
 <meta name="theme-color" content="#050c18">
 
-<meta property="og:title" content="RH²-Systems | Enterprise Cybersecurity">
-<meta property="og:description" content="Advanced offensive security, infrastructure auditing, and secure system engineering for modern enterprises.">
-<meta property="og:type" content="website">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -22,16 +18,18 @@
 :root {
     --bg-dark: #050c18;
     --bg-dark-2: #0f172a;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --text-main: #1e293b;
-    --text-light: #64748b;
+    --accent: #3b82f6; /* Bright Blue */
+    --accent-glow: #60a5fa;
+    --cyan: #06b6d4;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
     --white: #ffffff;
-    --glass: rgba(255, 255, 255, 0.95);
-    --border: rgba(0, 0, 0, 0.08);
+    --glass: rgba(15, 23, 42, 0.85);
+    --border: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(30, 41, 59, 0.7);
 }
 
-/* --- RESET & BASE --- */
+/* --- BASE --- */
 * {
     margin: 0;
     padding: 0;
@@ -41,17 +39,24 @@
 }
 
 body {
-    background: #f8fafc;
+    background: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
     overflow-x: hidden;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
 .container {
     width: 90%;
     max-width: 1200px;
     margin: auto;
     padding: 0 15px;
+    position: relative;
+    z-index: 2;
 }
 
 /* --- NAVIGATION --- */
@@ -60,11 +65,17 @@ header {
     top: 0;
     width: 100%;
     background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--border);
     z-index: 1000;
-    transition: 0.3s;
+    transition: all 0.4s ease;
+}
+
+header.scrolled {
+    padding: 10px 0;
+    background: rgba(5, 12, 24, 0.95);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 nav {
@@ -72,18 +83,23 @@ nav {
     justify-content: space-between;
     align-items: center;
     height: 80px;
+    transition: height 0.4s;
 }
+
+header.scrolled nav { height: 60px; }
 
 .logo {
     font-weight: 800;
     font-size: 24px;
-    color: var(--bg-dark);
+    color: var(--white);
     letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.logo span {
-    color: var(--accent);
-}
+.logo i { color: var(--accent); }
+.logo span { color: var(--accent); }
 
 .nav-links {
     display: flex;
@@ -93,22 +109,33 @@ nav {
 
 .nav-links a {
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 15px;
-    color: var(--text-main);
-    transition: color 0.3s;
+    color: var(--text-muted);
+    transition: all 0.3s;
+    position: relative;
 }
 
-.nav-links a:hover {
-    color: var(--accent);
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: var(--accent);
+    transition: width 0.3s;
 }
 
-/* Mobile Menu Toggle */
+.nav-links a:hover { color: var(--white); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Mobile Menu */
 .menu-toggle {
     display: none;
     cursor: pointer;
     font-size: 24px;
-    color: var(--bg-dark);
+    color: var(--white);
 }
 
 /* --- HERO SECTION --- */
@@ -119,93 +146,123 @@ nav {
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-color: var(--bg-dark);
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.15) 0px, transparent 50%);
-    color: var(--white);
-    padding-top: 80px;
     overflow: hidden;
+    padding-top: 80px;
 }
 
-/* Grid Pattern Overlay */
-.hero::before {
-    content: "";
+/* Canvas Background */
+#networkCanvas {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity: 0.5;
+    z-index: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, var(--bg-dark) 90%);
+    z-index: 1;
+    pointer-events: none;
 }
 
 .hero-content {
     position: relative;
-    z-index: 2;
-    max-width: 800px;
-    animation: fadeUp 1s ease-out;
+    z-index: 3;
+    max-width: 850px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--accent-glow);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    animation: float 3s ease-in-out infinite;
 }
 
 .hero h1 {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.1;
     margin-bottom: 25px;
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
+    background: linear-gradient(to right, #fff 20%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Typewriter Cursor */
+.typewriter {
+    color: var(--accent);
+    border-right: 4px solid var(--accent);
+    padding-right: 5px;
+    animation: blink 0.75s step-end infinite;
 }
 
 .hero p {
-    font-size: 1.15rem;
-    color: #94a3b8;
-    margin-bottom: 40px;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 45px;
     max-width: 650px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.8;
 }
 
+/* Animated Button */
 .btn {
+    position: relative;
     display: inline-block;
-    padding: 16px 36px;
+    padding: 16px 40px;
     background: var(--accent);
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     font-weight: 600;
     text-decoration: none;
+    overflow: hidden;
     transition: all 0.3s;
-    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    border: 1px solid transparent;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
     background: var(--accent-hover);
-    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
 }
 
-/* --- SECTIONS COMMON --- */
-section {
-    padding: 100px 0;
-}
+.btn:hover::before { left: 100%; }
 
-.section-title {
-    text-align: center;
-    margin-bottom: 70px;
-}
+/* --- SERVICES & CARDS --- */
+section { padding: 120px 0; }
 
 .section-title h2 {
     font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--bg-dark);
+    color: var(--white);
     margin-bottom: 15px;
 }
 
-.section-title p {
-    color: var(--text-light);
-    max-width: 600px;
-    margin: auto;
-}
-
-/* --- SERVICES GRID --- */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -213,205 +270,217 @@ section {
 }
 
 .card {
-    background: white;
+    background: var(--card-bg);
     padding: 40px;
-    border-radius: 12px;
+    border-radius: 16px;
     border: 1px solid var(--border);
-    transition: 0.3s;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
+    z-index: 1;
     overflow: hidden;
 }
 
+/* Card Glow Effect */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.06), transparent 40%);
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+
+.card:hover::before { opacity: 1; }
+
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
-    border-color: var(--accent);
-}
-
-.card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 15px;
-    color: var(--bg-dark);
-}
-
-.card p {
-    color: var(--text-light);
-    font-size: 0.95rem;
+    transform: translateY(-10px);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.3);
 }
 
 .card-icon {
     font-size: 24px;
     color: var(--accent);
-    margin-bottom: 20px;
-    background: #eff6ff;
-    width: 50px;
-    height: 50px;
+    margin-bottom: 25px;
+    background: rgba(59, 130, 246, 0.1);
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    transition: 0.3s;
 }
 
-/* --- STATS --- */
-.stats-container {
-    margin-top: 80px;
-    padding: 50px;
-    background: var(--bg-dark);
-    border-radius: 16px;
+.card:hover .card-icon {
+    background: var(--accent);
     color: white;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--white);
+}
+
+.card p { color: var(--text-muted); font-size: 1rem; }
+
+/* --- STATS COUNTER --- */
+.stats-container {
+    margin-top: 100px;
+    padding: 60px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 20px;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
     gap: 40px;
-    text-align: center;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
 }
+
+/* Scanning Line Animation */
+.stats-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+    animation: scan 4s infinite linear;
+}
+
+.stat { text-align: center; position: relative; z-index: 2; }
 
 .stat h3 {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
-    color: var(--accent);
-    margin-bottom: 10px;
+    color: var(--white);
+    margin-bottom: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
 }
 
-.stat p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.stat p { color: var(--accent); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+/* --- METHODOLOGY --- */
+.step-number {
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.03);
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    line-height: 1;
 }
 
 /* --- LEADERSHIP --- */
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 40px;
-    max-width: 900px;
-    margin: auto;
-}
-
 .team-card {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    text-align: center;
+    background: var(--card-bg);
     border: 1px solid var(--border);
+    text-align: center;
+    padding: 50px 30px;
+    transition: 0.3s;
 }
 
 .team-avatar {
-    width: 80px;
-    height: 80px;
-    background: #e2e8f0;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 2px solid var(--accent);
     border-radius: 50%;
-    margin: 0 auto 20px;
+    margin: 0 auto 25px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    color: var(--text-light);
-}
-
-.team-card h3 {
-    color: var(--bg-dark);
-    margin-bottom: 5px;
-}
-
-.role {
+    font-size: 32px;
     color: var(--accent);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 15px;
-    display: block;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
 }
 
 /* --- CONTACT --- */
-.cta {
-    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark-2) 100%);
-    color: white;
-    padding: 80px 0;
+.contact-section { position: relative; padding-bottom: 0; }
+
+.cta-box {
+    background: linear-gradient(135deg, var(--accent), #2563eb);
+    border-radius: 20px;
+    padding: 80px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.contact-wrapper {
+.cta-box h2 { color: white; font-size: 2.5rem; margin-bottom: 20px; }
+.cta-box p { color: rgba(255,255,255,0.9); margin-bottom: 40px; font-size: 1.2rem; }
+
+.form-floater {
     background: white;
-    padding: 60px;
+    padding: 50px;
     border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
     max-width: 700px;
-    margin: 0 auto;
-    margin-top: -150px; /* Overlap effect */
+    margin: -100px auto 0; /* Overlap */
     position: relative;
     z-index: 10;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
 }
 
-.contact-form .input-group {
-    margin-bottom: 20px;
-}
+.form-group { margin-bottom: 20px; position: relative; }
 
-.contact-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--bg-dark);
-}
-
-.contact-form input,
-.contact-form textarea {
+.form-group input, .form-group textarea {
     width: 100%;
-    padding: 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 15px;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #f8fafc;
     transition: 0.3s;
+    color: #334155;
 }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
+.form-group input:focus, .form-group textarea:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background: white;
 }
 
-.submit-btn {
-    width: 100%;
-    padding: 16px;
-    background: var(--bg-dark);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s;
+/* --- ANIMATIONS & KEYFRAMES --- */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
-.submit-btn:hover {
-    background: var(--accent);
+@keyframes blink { 50% { border-color: transparent; } }
+
+@keyframes scan {
+    0% { left: -100%; }
+    100% { left: 200%; }
 }
 
-/* --- FOOTER --- */
-footer {
-    background: #0f172a;
-    color: #94a3b8;
-    padding: 180px 0 50px; /* Extra top padding for overlap */
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-/* --- ANIMATIONS --- */
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+/* Scroll Reveal Classes */
 .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s ease-out;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
 }
 
-.reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-}
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+/* Staggered Delays for Grid Items */
+.grid .reveal:nth-child(1) { transition-delay: 0.1s; }
+.grid .reveal:nth-child(2) { transition-delay: 0.2s; }
+.grid .reveal:nth-child(3) { transition-delay: 0.3s; }
+.grid .reveal:nth-child(4) { transition-delay: 0.4s; }
 
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
@@ -422,38 +491,33 @@ footer {
         top: 80px;
         left: 0;
         width: 100%;
-        background: white;
+        background: var(--bg-dark);
         flex-direction: column;
-        padding: 30px;
-        gap: 20px;
+        padding: 40px;
         border-bottom: 1px solid var(--border);
         transform: translateY(-150%);
-        transition: 0.3s;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     }
     
     .nav-links.active { transform: translateY(0); }
     
-    .hero h1 { font-size: 2.5rem; }
+    .hero h1 { font-size: 2.8rem; }
     
-    .contact-wrapper {
-        margin-top: 0;
-        padding: 30px;
-    }
+    .stats-container { gap: 40px; }
     
-    footer { padding-top: 80px; }
-    
-    .stats-container { flex-direction: column; gap: 40px; }
+    .form-floater { width: 90%; padding: 30px; }
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<div class="hero-overlay"></div>
+<canvas id="networkCanvas"></canvas>
+
+<header id="navbar">
     <div class="container">
         <nav>
-            <div class="logo">RH²-<span>Systems</span></div>
+            <div class="logo"><i class="fas fa-shield-halved"></i> RH²-<span>Systems</span></div>
             <div class="menu-toggle" id="mobile-menu">
                 <i class="fas fa-bars"></i>
             </div>
@@ -461,7 +525,7 @@ footer {
                 <li><a href="#services" onclick="closeMenu()">Services</a></li>
                 <li><a href="#methodology" onclick="closeMenu()">Methodology</a></li>
                 <li><a href="#about" onclick="closeMenu()">Leadership</a></li>
-                <li><a href="#contact" class="btn" style="padding: 10px 20px; box-shadow:none;">Contact</a></li>
+                <li><a href="#contact" class="btn" style="padding: 10px 24px; margin-left:10px;">Contact</a></li>
             </ul>
         </nav>
     </div>
@@ -469,9 +533,10 @@ footer {
 
 <section class="hero">
     <div class="container hero-content">
-        <h1>Offensive Security.<br>Defensive Resilience.</h1>
-        <p>We deliver advanced penetration testing, red teaming, and secure engineering for high-risk digital environments. Secure your infrastructure before they find the gaps.</p>
-        <a href="#contact" class="btn">Request Confidential Assessment</a>
+        <div class="badge fade-in">2026 Enterprise Security Verified</div>
+        <h1>Offensive Security.<br><span class="typewriter" id="typewriter"></span></h1>
+        <p class="fade-in">We deliver advanced penetration testing, red teaming, and secure engineering for high-risk digital environments. Secure your infrastructure before they find the gaps.</p>
+        <a href="#contact" class="btn fade-in">Request Confidential Audit</a>
     </div>
 </section>
 
@@ -479,67 +544,70 @@ footer {
     <div class="container">
         <div class="section-title reveal">
             <h2>Core Capabilities</h2>
-            <p>Aligned with Zero-Trust Architecture, ISO 27001, and SOC 2 compliance standards.</p>
+            <p>Aligned with Zero-Trust Architecture, ISO 27001, and SOC 2.</p>
         </div>
 
-        <div class="grid">
+        <div class="grid" id="service-grid">
             <div class="card reveal">
-                <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="card-icon"><i class="fas fa-bug"></i></div>
                 <h3>Penetration Testing</h3>
-                <p>Manual and automated attack simulation across web apps, APIs, mobile, and internal networks to identify exploitable vulnerabilities.</p>
+                <p>Manual and automated attack simulation across web apps, APIs, mobile, and internal networks.</p>
             </div>
             <div class="card reveal">
                 <div class="card-icon"><i class="fas fa-user-secret"></i></div>
                 <h3>Red Team Operations</h3>
-                <p>Full-scope adversary emulation designed to test your SOC detection capabilities and incident response maturity.</p>
+                <p>Full-scope adversary emulation designed to test your SOC detection capabilities and response.</p>
             </div>
             <div class="card reveal">
-                <div class="card-icon"><i class="fas fa-server"></i></div>
+                <div class="card-icon"><i class="fas fa-network-wired"></i></div>
                 <h3>Infrastructure Auditing</h3>
-                <p>Deep-dive configuration reviews of Cloud (AWS/Azure) and On-Premise environments to harden attack surfaces.</p>
+                <p>Deep-dive configuration reviews of Cloud (AWS/Azure) and On-Premise environments.</p>
             </div>
             <div class="card reveal">
-                <div class="card-icon"><i class="fas fa-code"></i></div>
+                <div class="card-icon"><i class="fas fa-code-branch"></i></div>
                 <h3>Secure Engineering</h3>
-                <p>DevSecOps integration, secure code reviews, and architectural consulting to build security into the SDLC.</p>
+                <p>DevSecOps integration, secure code reviews, and architectural consulting for the SDLC.</p>
             </div>
         </div>
 
-        <div class="stats-container reveal">
+        <div class="stats-container reveal" id="stats-section">
             <div class="stat">
-                <h3>150+</h3>
+                <h3 data-target="150">0</h3>
                 <p>Engagements</p>
             </div>
             <div class="stat">
-                <h3>100%</h3>
-                <p>Confidentiality</p>
+                <h3 data-target="100">0</h3>
+                <p>Confidentiality %</p>
             </div>
             <div class="stat">
-                <h3>24/7</h3>
+                <h3 data-target="0">24/7</h3>
                 <p>Response Ops</p>
             </div>
         </div>
     </div>
 </section>
 
-<section id="methodology" style="background: #fff;">
+<section id="methodology">
     <div class="container">
         <div class="section-title reveal">
-            <h2>Our Methodology</h2>
-            <p>A structured, intelligence-driven framework ensuring precision and accountability.</p>
+            <h2>Methodology</h2>
+            <p>A structured, intelligence-driven framework.</p>
         </div>
 
         <div class="grid">
             <div class="card reveal">
-                <h3>1. Reconnaissance</h3>
-                <p>OSINT gathering and threat modeling to map your organization's digital footprint and potential entry points.</p>
+                <span class="step-number">01</span>
+                <h3>Reconnaissance</h3>
+                <p>OSINT gathering and threat modeling to map your digital footprint and potential entry points.</p>
             </div>
             <div class="card reveal">
-                <h3>2. Exploitation</h3>
+                <span class="step-number">02</span>
+                <h3>Exploitation</h3>
                 <p>Controlled execution of attack vectors to validate vulnerabilities, filtering out false positives.</p>
             </div>
             <div class="card reveal">
-                <h3>3. Remediation</h3>
+                <span class="step-number">03</span>
+                <h3>Remediation</h3>
                 <p>Detailed technical reports with prioritized mitigation strategies for engineering teams.</p>
             </div>
         </div>
@@ -550,88 +618,102 @@ footer {
     <div class="container">
         <div class="section-title reveal">
             <h2>Leadership</h2>
-            <p>Security engineering driven by precision.</p>
         </div>
 
-        <div class="team-grid">
-            <div class="team-card reveal">
-                <div class="team-avatar"><i class="fas fa-user"></i></div>
+        <div class="grid" style="max-width: 800px; margin: auto;">
+            <div class="card team-card reveal">
+                <div class="team-avatar"><i class="fas fa-user-shield"></i></div>
                 <h3>Raj Hridoy</h3>
-                <span class="role">Lead Security Engineer</span>
-                <p>Specializing in Zero-Trust architecture, enterprise risk mitigation, and cloud security posture management.</p>
+                <p style="color:var(--accent); font-weight:600; margin-bottom:10px;">Lead Security Engineer</p>
+                <p>Specializing in Zero-Trust architecture and enterprise risk mitigation.</p>
             </div>
-            <div class="team-card reveal">
+            <div class="card team-card reveal">
                 <div class="team-avatar"><i class="fas fa-user-ninja"></i></div>
                 <h3>Riyad Hasan</h3>
-                <span class="role">Lead Red Team Operator</span>
-                <p>Expert in advanced threat simulation, social engineering, and offensive security operations.</p>
+                <p style="color:var(--accent); font-weight:600; margin-bottom:10px;">Lead Red Team Operator</p>
+                <p>Expert in advanced threat simulation and social engineering.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="cta">
-    <div class="container">
-        <div class="section-title" style="color: white; margin-bottom: 30px;">
-            <h2 style="color: white;">Secure Your Infrastructure</h2>
-            <p style="color: rgba(255,255,255,0.8);">Initiate a confidential discussion about your security requirements.</p>
+<section class="contact-section">
+    <div class="cta-box">
+        <div class="container">
+            <h2>Secure Your Infrastructure</h2>
+            <p>Initiate a confidential discussion.</p>
         </div>
     </div>
-</section>
 
-<section id="contact" style="padding-top: 0;">
     <div class="container">
-        <div class="contact-wrapper reveal">
-            <form action="https://formspree.io/f/yourFormID" method="POST" class="contact-form">
-                <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" name="name" required>
+        <div class="form-floater reveal" id="contact">
+            <form action="https://formspree.io/f/yourFormID" method="POST">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Full Name" required>
                 </div>
-                <div class="input-group">
-                    <label>Corporate Email</label>
-                    <input type="email" name="email" required>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Corporate Email" required>
                 </div>
-                <div class="input-group">
-                    <label>Security Requirement</label>
-                    <textarea name="message" rows="5" required></textarea>
+                <div class="form-group">
+                    <textarea name="message" rows="5" placeholder="Describe your security requirements..." required></textarea>
                 </div>
-                <button type="submit" class="submit-btn">Send Secure Message</button>
+                <button type="submit" class="btn" style="width:100%; border:none; cursor:pointer;">Send Secure Message</button>
             </form>
         </div>
     </div>
 </section>
 
-<footer>
+<footer style="background:var(--bg-dark-2); padding: 100px 0 40px; text-align:center; color:var(--text-muted);">
     <div class="container">
-        <p>© 2026 RH²-Systems. Enterprise Cybersecurity & Secure Engineering.</p>
-        <p style="margin-top: 10px; font-size: 13px;">Rajshahi Division, Bangladesh</p>
+        <p>© 2026 RH²-Systems. Enterprise Cybersecurity.</p>
+        <p style="font-size: 13px; margin-top:10px;">Rajshahi Division, Bangladesh</p>
     </div>
 </footer>
 
 <script>
-    // Mobile Menu Toggle
+    // --- 1. MOBILE MENU ---
     const menuToggle = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
+    menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+    function closeMenu() { navLinks.classList.remove('active'); }
 
-    menuToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
+    // --- 2. NAVBAR SCROLL EFFECT ---
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
     });
 
-    function closeMenu() {
-        navLinks.classList.remove('active');
-    }
+    // --- 3. CANVAS PARTICLE NETWORK (The "Cyber" Background) ---
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d');
+    let particlesArray;
 
-    // Scroll Animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            }
-        });
-    }, { threshold: 0.1 });
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
+    let mouse = { x: null, y: null, radius: (canvas.height/80) * (canvas.width/80) };
 
-</body>
-</html>
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x; this.y = y;
+            this.directionX = directionX; this.directionY = directionY;
+            this.size = size; this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = '#3b82f6';
+            ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+            if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+            
+            // Mouse Repulsion
+ 
