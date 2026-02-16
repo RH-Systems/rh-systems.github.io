@@ -488,4 +488,12 @@
     function animate() {
         requestAnimationFrame(animate);
         ctx.clearRect(0, 0, width, height);
-        particles.fo
+        particles.forEach(p => p.update());
+        connect();
+    }
+
+    initParticles();
+    animate();
+</script>
+</body>
+</html>
