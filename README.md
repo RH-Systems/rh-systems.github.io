@@ -81,6 +81,7 @@
         background: var(--accent); color: #fff; font-weight: 700;
         position: relative; overflow: hidden; z-index: 1;
         transition: transform 0.3s, box-shadow 0.3s;
+        border: none; cursor: pointer;
     }
     .btn::before {
         content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -105,7 +106,7 @@
     .card h3 { margin-bottom: 15px; font-size: 1.4rem; color: #fff; }
     .card-icon { font-size: 2rem; color: var(--accent); margin-bottom: 20px; }
 
-    /* Team Section (New) */
+    /* Team Section */
     .team-grid {
         display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin-top: 60px;
     }
@@ -177,6 +178,43 @@
 
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
+    /* SUCCESS OVERLAY STYLES (NEW) */
+    .success-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(2, 6, 23, 0.9);
+        backdrop-filter: blur(8px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 9999;
+        opacity: 0; pointer-events: none; transition: 0.4s ease;
+    }
+    .success-overlay.active {
+        opacity: 1; pointer-events: all;
+    }
+    .success-box {
+        background: var(--bg-surface);
+        border: 2px solid var(--accent);
+        box-shadow: 0 0 50px rgba(14, 165, 233, 0.3);
+        padding: 40px;
+        text-align: center;
+        border-radius: 12px;
+        max-width: 400px;
+        transform: scale(0.8);
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .success-overlay.active .success-box {
+        transform: scale(1);
+    }
+    .checkmark-circle {
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        margin: 0 auto 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.5rem; color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+    }
+
     /* Mobile */
     @media(max-width: 768px) {
         .hero h1 { font-size: 2.5rem; }
@@ -188,11 +226,21 @@
         .nav-links.active { transform: translateY(0); }
         .menu-toggle { display: block; }
         .stats-container { flex-direction: column; text-align: center; }
+        .grid { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 
 <body>
+
+<div id="successOverlay" class="success-overlay">
+    <div class="success-box">
+        <div class="checkmark-circle">✓</div>
+        <h3 class="mono" style="color: var(--accent); margin-bottom: 10px;">TRANSMISSION SECURE</h3>
+        <p style="margin-bottom: 20px;">Data encrypted and successfully uploaded to RH²-Systems servers.</p>
+        <button class="btn" id="closeSuccessBtn">ACKNOWLEDGE</button>
+    </div>
+</div>
 
 <header>
     <div class="container">
@@ -325,7 +373,7 @@
                 <p class="mono" style="color: var(--accent)">> Encrypted channels available upon request.</p>
             </div>
             <div class="card fade-up">
-                <form>
+                <form id="contactForm">
                     <input type="text" placeholder="Full Name / Organization" required>
                     <input type="email" placeholder="Work Email" required>
                     <textarea rows="5" placeholder="Project Scope / Details" required></textarea>
@@ -352,7 +400,7 @@
         navLinks.classList.toggle('active');
     });
 
-    // 2. Scroll Animation (Intersection Observer)
+    // 2. Scroll Animation
     const observerOptions = { threshold: 0.1 };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -361,139 +409,126 @@
             }
         });
     }, observerOptions);
-
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
     // 3. Typewriter Effect
     const words = ["Infrastructure Auditing", "Secure Engineering", "Red Team Operations", "Vulnerability Analysis"];
     let i = 0, j = 0, isDeleting = false;
-    const typeSpeed = 50;
-    const deleteSpeed = 30;
-    const delayBetweenWords = 2000;
-
+    const typeSpeed = 50, deleteSpeed = 30, delayBetweenWords = 2000;
     function type() {
         const currentWord = words[i];
         const element = document.getElementById("typewriter");
-        
-        if (isDeleting) {
-            element.textContent = currentWord.substring(0, j--);
-        } else {
-            element.textContent = currentWord.substring(0, j++);
-        }
-
+        if (isDeleting) element.textContent = currentWord.substring(0, j--);
+        else element.textContent = currentWord.substring(0, j++);
         let speed = isDeleting ? deleteSpeed : typeSpeed;
-
-        if (!isDeleting && j === currentWord.length) {
-            speed = delayBetweenWords;
-            isDeleting = true;
-        } else if (isDeleting && j === 0) {
-            isDeleting = false;
-            i = (i + 1) % words.length;
-        }
-
+        if (!isDeleting && j === currentWord.length) { speed = delayBetweenWords; isDeleting = true; }
+        else if (isDeleting && j === 0) { isDeleting = false; i = (i + 1) % words.length; }
         setTimeout(type, speed);
     }
     type();
 
-    // 4. Advanced Network Canvas Animation
+    // 4. Network Canvas Animation
     const canvas = document.getElementById('networkCanvas');
     const ctx = canvas.getContext('2d');
-    let width, height;
-    let particles = [];
-
-    // Resize handling
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // Mouse interaction
+    let width, height, particles = [];
+    function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+    window.addEventListener('resize', resize); resize();
     let mouse = { x: null, y: null, radius: 150 };
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-    });
-
+    window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
     class Particle {
         constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.vx = (Math.random() - 0.5) * 1; // Velocity X
-            this.vy = (Math.random() - 0.5) * 1; // Velocity Y
-            this.size = Math.random() * 2 + 1;
+            this.x = Math.random() * width; this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 1; this.vy = (Math.random() - 0.5) * 1; this.size = Math.random() * 2 + 1;
         }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = '#0ea5e9';
-            ctx.fill();
-        }
-
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = '#0ea5e9'; ctx.fill(); }
         update() {
-            // Movement
-            this.x += this.vx;
-            this.y += this.vy;
-
-            // Bounce off edges
-            if (this.x < 0 || this.x > width) this.vx *= -1;
-            if (this.y < 0 || this.y > height) this.vy *= -1;
-
-            // Mouse interaction
-            let dx = mouse.x - this.x;
-            let dy = mouse.y - this.y;
+            this.x += this.vx; this.y += this.vy;
+            if (this.x < 0 || this.x > width) this.vx *= -1; if (this.y < 0 || this.y > height) this.vy *= -1;
+            let dx = mouse.x - this.x, dy = mouse.y - this.y;
             let distance = Math.sqrt(dx*dx + dy*dy);
             if (distance < mouse.radius) {
-                if (mouse.x < this.x && this.x < width - 10) this.x += 2;
-                if (mouse.x > this.x && this.x > 10) this.x -= 2;
-                if (mouse.y < this.y && this.y < height - 10) this.y += 2;
-                if (mouse.y > this.y && this.y > 10) this.y -= 2;
+                if (mouse.x < this.x && this.x < width - 10) this.x += 2; if (mouse.x > this.x && this.x > 10) this.x -= 2;
+                if (mouse.y < this.y && this.y < height - 10) this.y += 2; if (mouse.y > this.y && this.y > 10) this.y -= 2;
             }
-
             this.draw();
         }
     }
-
-    function initParticles() {
-        particles = [];
-        let numberOfParticles = (width * height) / 9000;
-        for (let i = 0; i < numberOfParticles; i++) {
-            particles.push(new Particle());
-        }
-    }
-
+    function initParticles() { particles = []; let numberOfParticles = (width * height) / 9000; for (let i = 0; i < numberOfParticles; i++) particles.push(new Particle()); }
     function connect() {
-        let opacityValue = 1;
         for (let a = 0; a < particles.length; a++) {
             for (let b = a; b < particles.length; b++) {
-                let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) 
-                             + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                let distance = ((particles[a].x - particles[b].x)**2) + ((particles[a].y - particles[b].y)**2);
                 if (distance < (width/7) * (height/7)) {
-                    opacityValue = 1 - (distance / 20000);
-                    ctx.strokeStyle = 'rgba(14, 165, 233,' + opacityValue + ')';
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(particles[a].x, particles[a].y);
-                    ctx.lineTo(particles[b].x, particles[b].y);
-                    ctx.stroke();
+                    ctx.strokeStyle = 'rgba(14, 165, 233,' + (1 - (distance / 20000)) + ')';
+                    ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particles[a].x, particles[a].y); ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke();
                 }
             }
         }
     }
+    function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, width, height); particles.forEach(p => p.update()); connect(); }
+    initParticles(); animate();
+</script>
 
-    function animate() {
-        requestAnimationFrame(animate);
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => p.update());
-        connect();
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyABJnzCJxVk6NXWjqs5Qc5NLEoBZ-Zyf4E",
+    authDomain: "rh2-systems.firebaseapp.com",
+    projectId: "rh2-systems",
+    storageBucket: "rh2-systems.firebasestorage.app",
+    messagingSenderId: "492917852953",
+    appId: "1:492917852953:web:9fc6ff86f6fcd2fc965388",
+    measurementId: "G-RRHPV2Y2S9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.querySelector("form");
+  const successOverlay = document.getElementById('successOverlay');
+  const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+
+  // Handle Success Modal Close
+  closeSuccessBtn.addEventListener('click', () => {
+    successOverlay.classList.remove('active');
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.innerText;
+
+    // Visual feedback on button
+    btn.innerText = "ENCRYPTING...";
+    btn.style.opacity = "0.7";
+
+    const inputs = form.querySelectorAll("input, textarea");
+    const name = inputs[0].value;
+    const email = inputs[1].value;
+    const message = inputs[2].value;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        name,
+        email,
+        message,
+        timestamp: new Date()
+      });
+
+      // Show Success Animation
+      successOverlay.classList.add('active');
+      form.reset();
+
+    } catch (error) {
+      alert("Transmission Failed: " + error.message);
+    } finally {
+        // Reset button
+        btn.innerText = originalText;
+        btn.style.opacity = "1";
     }
-
-    initParticles();
-    animate();
+  });
 </script>
 </body>
-</html> 
+</html>
