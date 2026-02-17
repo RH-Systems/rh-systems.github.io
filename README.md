@@ -549,7 +549,7 @@
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBbNpess45fQDadU4FWxG-hwuCB3KbZ5cE",
+    apiKey: "AIzaSyBl4bO6hNumDov3d26YNFj1y7Id498rBTU",
     authDomain: "rh2-systems.firebaseapp.com",
     projectId: "rh2-systems",
     storageBucket: "rh2-systems.firebasestorage.app",
