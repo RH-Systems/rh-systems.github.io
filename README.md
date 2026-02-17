@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>RH²-Systems | Enterprise Cybersecurity & Offensive Security</title>
 <meta name="description" content="RH²-Systems delivers enterprise-grade penetration testing, red teaming, and secure infrastructure auditing.">
 <meta name="author" content="RH²-Systems">
@@ -22,7 +22,7 @@
     }
 
     /* Reset & Base */
-    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
     body {
         background-color: var(--bg-deep);
         background-image: 
@@ -33,6 +33,7 @@
         font-family: 'Inter', sans-serif;
         overflow-x: hidden;
         line-height: 1.6;
+        text-rendering: optimizeLegibility;
     }
 
     h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.02em; }
@@ -50,6 +51,7 @@
         position: fixed; top: 0; width: 100%; z-index: 1000;
         background: rgba(2, 6, 23, 0.85);
         backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border);
     }
     nav { height: 80px; display: flex; justify-content: space-between; align-items: center; }
@@ -58,7 +60,7 @@
     .nav-links { display: flex; gap: 40px; list-style: none; }
     .nav-links a { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     .nav-links a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-    .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-main); }
+    .menu-toggle { display: none; font-size: 1.8rem; cursor: pointer; color: var(--text-main); padding: 5px; user-select: none; }
 
     /* Hero Section */
     .hero {
@@ -68,8 +70,10 @@
         text-align: center; position: relative; overflow: hidden;
         padding-top: 80px; /* Offset for fixed header */
     }
-    #networkCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
-    .hero-content { position: relative; z-index: 2; max-width: 900px; }
+    #networkCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; pointer-events: none; /* Let touches pass to content unless interaction needed */ }
+    /* Re-enable pointer events for canvas interaction if desired, but content takes priority */
+    
+    .hero-content { position: relative; z-index: 2; max-width: 900px; width: 100%; }
     .badge {
         display: inline-block; padding: 6px 16px; border-radius: 50px;
         background: rgba(14, 165, 233, 0.1); border: 1px solid var(--accent);
@@ -85,6 +89,7 @@
         position: relative; overflow: hidden; z-index: 1;
         transition: transform 0.3s, box-shadow 0.3s;
         border: none; cursor: pointer;
+        -webkit-appearance: none;
     }
     .btn::before {
         content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -177,6 +182,7 @@
         padding: 15px; color: #fff; font-family: inherit; border-radius: 6px;
         width: 100%; transition: 0.3s;
         font-size: 16px; /* Prevents iOS zoom on focus */
+        appearance: none; -webkit-appearance: none;
     }
     input:focus, textarea:focus { outline: none; border-color: var(--accent); background: rgba(14, 165, 233, 0.05); }
 
@@ -237,37 +243,69 @@
         box-shadow: 0 0 20px var(--accent-glow);
     }
 
-    /* Mobile Responsiveness */
+    /* Mobile Responsiveness & Polish */
     @media(max-width: 900px) {
          .hero h1 { font-size: 3rem; }
          .contact-grid { grid-template-columns: 1fr; }
     }
 
     @media(max-width: 768px) {
-        section { padding: 80px 0; }
-        .hero h1 { font-size: 2.2rem; }
-        .hero p { font-size: 1rem; }
-        
+        section { padding: 60px 0; }
+        .container { padding: 0 25px; } /* Increased side padding slightly for breathing room */
+
+        .hero { 
+            padding-top: 100px; /* More space for header */
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; line-height: 1.2; word-wrap: break-word; }
+        .hero p { font-size: 1rem; margin-bottom: 30px; }
+        .hero .btn { width: 100%; max-width: 300px; } /* Full width button on mobile */
+
+        /* Enhanced Mobile Menu */
         .nav-links {
-            position: fixed; top: 80px; left: 0; width: 100%; height: calc(100vh - 80px);
-            background: var(--bg-deep);
-            flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 60px;
-            gap: 30px;
-            border-bottom: 1px solid var(--border); transform: translateY(-150%); transition: 0.4s;
+            position: fixed; top: 79px; left: 0; width: 100%; 
+            height: calc(100dvh - 79px); /* Use dvh for mobile browsers */
+            background: rgba(2, 6, 23, 0.98);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 20px;
+            gap: 35px;
+            border-bottom: 1px solid var(--border); 
+            transform: translateY(-150%); 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .nav-links.active { transform: translateY(0); }
+        .nav-links a { font-size: 1.2rem; font-weight: 700; } /* Larger touch targets */
+
         .menu-toggle { display: block; }
         
-        .stats-container { flex-direction: column; text-align: center; }
+        .stats-container { 
+            flex-direction: column; text-align: center; 
+            padding: 30px 20px; gap: 40px;
+        }
         
-        /* Ensure single column on mobile */
-        .grid, .contact-grid { grid-template-columns: 1fr; gap: 20px; }
-        .team-grid { grid-template-columns: 1fr; }
+        /* Layout Improvements */
+        .grid { gap: 20px; }
+        .contact-grid { gap: 40px; }
         
-        /* Adjust card padding for small screens */
+        /* Force single column for team and fix overflow */
+        .team-grid { grid-template-columns: 1fr; gap: 30px; }
+        
+        /* Better Card Density */
         .card { padding: 30px 25px; }
+        
+        h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+        
+        footer { margin-top: 60px; padding: 60px 0 30px; }
+    }
+
+    @media(max-width: 480px) {
+        .hero h1 { font-size: 2rem; }
+        .stat-item h3 { font-size: 2.5rem; }
+        .card { padding: 25px 20px; }
+        .profile-header { padding: 30px 20px; }
     }
 </style>
 </head>
@@ -439,19 +477,21 @@
 </footer>
 
 <script>
-    // 1. Mobile Menu Logic
+    // 1. Mobile Menu Logic with Icon Toggle
     const menuBtn = document.getElementById('menuBtn');
     const navLinks = document.getElementById('navLinks');
-    // Close menu when a link is clicked
     const links = document.querySelectorAll('.nav-links a');
 
     menuBtn.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        // Toggle Icon between Hamburger and Close
+        menuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
     });
 
     links.forEach(link => {
         link.addEventListener('click', () => {
             navLinks.classList.remove('active');
+            menuBtn.textContent = '☰';
         });
     });
 
