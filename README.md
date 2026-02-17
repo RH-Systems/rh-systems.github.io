@@ -58,12 +58,15 @@
     .nav-links { display: flex; gap: 40px; list-style: none; }
     .nav-links a { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     .nav-links a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-    .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
+    .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-main); }
 
     /* Hero Section */
     .hero {
-        min-height: 100vh; display: flex; align-items: center; justify-content: center;
+        min-height: 100vh; /* Fallback */
+        min-height: 100dvh; /* Dynamic Height for Mobile */
+        display: flex; align-items: center; justify-content: center;
         text-align: center; position: relative; overflow: hidden;
+        padding-top: 80px; /* Offset for fixed header */
     }
     #networkCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
     .hero-content { position: relative; z-index: 2; max-width: 900px; }
@@ -92,11 +95,28 @@
     .btn:hover::before { left: 100%; }
 
     /* Cards & Grid */
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+    .grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+        gap: 30px; 
+        margin-top: 50px; 
+    }
+    
+    /* Specific class for Contact Section to handle 2-col vs 1-col */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        align-items: center;
+    }
+
     .card {
         background: var(--bg-surface); border: 1px solid var(--border);
         padding: 40px; border-radius: 12px; transition: 0.4s;
         position: relative; overflow: hidden;
+        height: 100%; /* Ensure equal height in flex/grid contexts */
+        display: flex;
+        flex-direction: column;
     }
     .card:hover {
         transform: translateY(-10px);
@@ -156,6 +176,7 @@
         background: rgba(0,0,0,0.3); border: 1px solid var(--border);
         padding: 15px; color: #fff; font-family: inherit; border-radius: 6px;
         width: 100%; transition: 0.3s;
+        font-size: 16px; /* Prevents iOS zoom on focus */
     }
     input:focus, textarea:focus { outline: none; border-color: var(--accent); background: rgba(14, 165, 233, 0.05); }
 
@@ -178,7 +199,7 @@
 
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* SUCCESS OVERLAY STYLES (NEW) */
+    /* SUCCESS OVERLAY STYLES */
     .success-overlay {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -199,6 +220,7 @@
         text-align: center;
         border-radius: 12px;
         max-width: 400px;
+        width: 90%;
         transform: scale(0.8);
         transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
@@ -215,18 +237,37 @@
         box-shadow: 0 0 20px var(--accent-glow);
     }
 
-    /* Mobile */
+    /* Mobile Responsiveness */
+    @media(max-width: 900px) {
+         .hero h1 { font-size: 3rem; }
+         .contact-grid { grid-template-columns: 1fr; }
+    }
+
     @media(max-width: 768px) {
-        .hero h1 { font-size: 2.5rem; }
+        section { padding: 80px 0; }
+        .hero h1 { font-size: 2.2rem; }
+        .hero p { font-size: 1rem; }
+        
         .nav-links {
-            position: fixed; top: 80px; left: 0; width: 100%; background: var(--bg-deep);
-            flex-direction: column; align-items: center; padding: 40px 0;
+            position: fixed; top: 80px; left: 0; width: 100%; height: calc(100vh - 80px);
+            background: var(--bg-deep);
+            flex-direction: column; align-items: center; justify-content: flex-start;
+            padding-top: 60px;
+            gap: 30px;
             border-bottom: 1px solid var(--border); transform: translateY(-150%); transition: 0.4s;
+            overflow-y: auto;
         }
         .nav-links.active { transform: translateY(0); }
         .menu-toggle { display: block; }
+        
         .stats-container { flex-direction: column; text-align: center; }
-        .grid { grid-template-columns: 1fr; }
+        
+        /* Ensure single column on mobile */
+        .grid, .contact-grid { grid-template-columns: 1fr; gap: 20px; }
+        .team-grid { grid-template-columns: 1fr; }
+        
+        /* Adjust card padding for small screens */
+        .card { padding: 30px 25px; }
     }
 </style>
 </head>
@@ -288,6 +329,11 @@
                 <div class="card-icon mono">{ }</div>
                 <h3>Secure Engineering</h3>
                 <p>DevSecOps integration, Zero Trust architecture design, and source code review to build security into the DNA of your software.</p>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon mono">[ + ]</div>
+                <h3>Security Monitoring & Incident Response</h3>
+                <p>Continuous threat monitoring, log analysis, and rapid incident response to detect, contain, and remediate security breaches before they escalate.</p>
             </div>
         </div>
     </div>
@@ -365,7 +411,7 @@
 
 <section id="contact">
     <div class="container">
-        <div class="grid" style="grid-template-columns: 1fr 1fr; align-items: center;">
+        <div class="contact-grid">
             <div class="fade-up">
                 <h2>Secure Consultation</h2>
                 <p>Ready to secure your infrastructure? Contact us for a confidential discussion regarding your security posture.</p>
@@ -396,8 +442,17 @@
     // 1. Mobile Menu Logic
     const menuBtn = document.getElementById('menuBtn');
     const navLinks = document.getElementById('navLinks');
+    // Close menu when a link is clicked
+    const links = document.querySelectorAll('.nav-links a');
+
     menuBtn.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+    });
+
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
     });
 
     // 2. Scroll Animation
@@ -418,6 +473,7 @@
     function type() {
         const currentWord = words[i];
         const element = document.getElementById("typewriter");
+        if(!element) return;
         if (isDeleting) element.textContent = currentWord.substring(0, j--);
         else element.textContent = currentWord.substring(0, j++);
         let speed = isDeleting ? deleteSpeed : typeSpeed;
@@ -431,10 +487,27 @@
     const canvas = document.getElementById('networkCanvas');
     const ctx = canvas.getContext('2d');
     let width, height, particles = [];
-    function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
-    window.addEventListener('resize', resize); resize();
+    
+    function resize() { 
+        width = window.innerWidth; 
+        height = window.innerHeight; 
+        canvas.width = width; 
+        canvas.height = height; 
+    }
+    window.addEventListener('resize', resize); 
+    resize();
+    
     let mouse = { x: null, y: null, radius: 150 };
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+    
+    // Touch support for mobile interaction
+    window.addEventListener('touchmove', (e) => {
+        if(e.touches.length > 0) {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        }
+    });
+
     class Particle {
         constructor() {
             this.x = Math.random() * width; this.y = Math.random() * height;
@@ -444,6 +517,8 @@
         update() {
             this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > width) this.vx *= -1; if (this.y < 0 || this.y > height) this.vy *= -1;
+            
+            // Interaction
             let dx = mouse.x - this.x, dy = mouse.y - this.y;
             let distance = Math.sqrt(dx*dx + dy*dy);
             if (distance < mouse.radius) {
