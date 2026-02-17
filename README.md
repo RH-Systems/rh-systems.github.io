@@ -373,6 +373,16 @@
                 <h3>Security Monitoring & Incident Response</h3>
                 <p>Continuous threat monitoring, log analysis, and rapid incident response to detect, contain, and remediate security breaches before they escalate.</p>
             </div>
+            <div class="card fade-up">
+                <div class="card-icon mono">@</div>
+                <h3>Threat Modeling & Risk Analysis</h3>
+                <p>Identify and prioritize potential attack vectors and system weaknesses before adversaries exploit them.</p>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon mono">&lt;SYS&gt;</div>
+                <h3>Security Architecture Review</h3>
+                <p>Comprehensive evaluation of system design, trust boundaries, and defensive controls to identify structural weaknesses before they become exploitable risks.</p>
+            </div>
         </div>
     </div>
 </section>
@@ -455,7 +465,7 @@
                 <p>Ready to secure your infrastructure? Contact us for a confidential discussion regarding your security posture.</p>
                 <br>
                 <p class="mono" style="color: var(--accent)">> Encrypted channels available upon request.</p>
-            </div>
+       </div>
             <div class="card fade-up">
                 <form id="contactForm">
                     <input type="text" placeholder="Full Name / Organization" required>
