@@ -231,7 +231,7 @@
         box-shadow: 0 0 20px var(--accent-glow);
     }
 
-    /* === NEW INTELLIGENCE SCAN FEATURE STYLES === */
+    /* === INTELLIGENCE SCAN FEATURE STYLES === */
     .intel-box {
         background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(2, 6, 23, 0.95) 100%);
         border: 1px solid var(--border);
@@ -263,6 +263,7 @@
         background-color: var(--accent);
         border-radius: 50%;
         animation: activePulse 1.5s infinite;
+        flex-shrink: 0;
     }
     .intel-content {
         padding: 25px;
@@ -288,12 +289,16 @@
     }
     .intel-label {
         color: var(--text-muted);
-        width: 140px;
+        width: 160px;
         flex-shrink: 0;
     }
     .intel-value {
         color: #fff;
         word-break: break-all;
+    }
+    .intel-value.loading {
+        color: var(--text-muted);
+        animation: loadingPulse 1.5s ease-in-out infinite;
     }
     .scan-line {
         position: absolute;
@@ -316,6 +321,10 @@
         10% { opacity: 0.8; }
         90% { opacity: 0.8; }
         100% { top: 100%; opacity: 0; }
+    }
+    @keyframes loadingPulse {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
     }
     /* =========================================== */
 
@@ -376,6 +385,7 @@
         .intel-label { width: auto; font-size: 0.85rem; }
         .intel-value { font-size: 1rem; }
         .intel-content { padding: 20px; }
+        .intel-header { font-size: 0.8rem; padding: 12px 20px; }
     }
 
     @media(max-width: 480px) {
@@ -544,29 +554,29 @@
         <div class="intel-box fade-up">
             <div class="scan-line"></div>
             <div class="intel-header mono">
-                <span>> RH²_SYS_TELEMETRY</span>
+                <span>&gt; RH²_SYS_TELEMETRY</span>
                 <span class="pulse-dot"></span>
             </div>
             <div class="intel-content mono">
                 <div class="intel-row">
                     <span class="intel-label">IP Address:</span> 
-                    <span class="intel-value" id="intel-ip">Initiating scan...</span>
+                    <span class="intel-value loading" id="intel-ip">Initiating scan...</span>
                 </div>
                 <div class="intel-row">
                     <span class="intel-label">Country:</span> 
-                    <span class="intel-value" id="intel-country">Initiating scan...</span>
+                    <span class="intel-value loading" id="intel-country">Initiating scan...</span>
                 </div>
                 <div class="intel-row">
                     <span class="intel-label">City:</span> 
-                    <span class="intel-value" id="intel-city">Initiating scan...</span>
+                    <span class="intel-value loading" id="intel-city">Initiating scan...</span>
                 </div>
                 <div class="intel-row">
                     <span class="intel-label">ISP / Network:</span> 
-                    <span class="intel-value" id="intel-isp">Initiating scan...</span>
+                    <span class="intel-value loading" id="intel-isp">Initiating scan...</span>
                 </div>
                 <div class="intel-row">
                     <span class="intel-label">Timezone:</span> 
-                    <span class="intel-value" id="intel-timezone">Initiating scan...</span>
+                    <span class="intel-value loading" id="intel-timezone">Initiating scan...</span>
                 </div>
                 <div class="intel-row">
                     <span class="intel-label">Browser:</span> 
@@ -580,6 +590,7 @@
         </div>
     </div>
 </section>
+
 <section id="contact">
     <div class="container">
         <div class="contact-grid">
@@ -587,8 +598,8 @@
                 <h2>Secure Consultation</h2>
                 <p>Ready to secure your infrastructure? Contact us for a confidential discussion regarding your security posture.</p>
                 <br>
-                <p class="mono" style="color: var(--accent)">> Encrypted channels available upon request.</p>
-       </div>
+                <p class="mono" style="color: var(--accent)">&gt; Encrypted channels available upon request.</p>
+            </div>
             <div class="card fade-up">
                 <form id="contactForm">
                     <input type="text" placeholder="Full Name / Organization" required>
@@ -610,6 +621,7 @@
 </footer>
 
 <script>
+    // ── Mobile Nav ──────────────────────────────────────────────────────────────
     const menuBtn = document.getElementById('menuBtn');
     const navLinks = document.getElementById('navLinks');
     const links = document.querySelectorAll('.nav-links a');
@@ -618,7 +630,6 @@
         navLinks.classList.toggle('active');
         menuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
     });
-
     links.forEach(link => {
         link.addEventListener('click', () => {
             navLinks.classList.remove('active');
@@ -626,23 +637,20 @@
         });
     });
 
-    const observerOptions = { threshold: 0.1 };
+    // ── Scroll Fade-Up ──────────────────────────────────────────────────────────
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions);
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
+    // ── Typewriter ──────────────────────────────────────────────────────────────
     const words = ["Infrastructure Auditing", "Secure Engineering", "Red Team Operations", "Vulnerability Analysis"];
     let i = 0, j = 0, isDeleting = false;
     const typeSpeed = 50, deleteSpeed = 30, delayBetweenWords = 2000;
     function type() {
         const currentWord = words[i];
         const element = document.getElementById("typewriter");
-        if(!element) return;
+        if (!element) return;
         if (isDeleting) element.textContent = currentWord.substring(0, j--);
         else element.textContent = currentWord.substring(0, j++);
         let speed = isDeleting ? deleteSpeed : typeSpeed;
@@ -652,59 +660,63 @@
     }
     type();
 
+    // ── Network Canvas ──────────────────────────────────────────────────────────
     const canvas = document.getElementById('networkCanvas');
     const ctx = canvas.getContext('2d');
     let width, height, particles = [];
     
-    function resize() { 
-        width = canvas.clientWidth || window.innerWidth; 
-        height = canvas.clientHeight || window.innerHeight; 
-        
+    function resize() {
+        width = canvas.clientWidth || window.innerWidth;
+        height = canvas.clientHeight || window.innerHeight;
         const dpr = window.devicePixelRatio || 1;
-        canvas.width = width * dpr; 
-        canvas.height = height * dpr; 
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
         ctx.scale(dpr, dpr);
     }
-    window.addEventListener('resize', resize); 
+    window.addEventListener('resize', () => { resize(); initParticles(); });
     resize();
-    
+
     let mouse = { x: null, y: null, radius: 150 };
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-    
     window.addEventListener('touchmove', (e) => {
-        if(e.touches.length > 0) {
-            mouse.x = e.touches[0].clientX;
-            mouse.y = e.touches[0].clientY;
-        }
+        if (e.touches.length > 0) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
     });
 
     class Particle {
         constructor() {
             this.x = Math.random() * width; this.y = Math.random() * height;
-            this.vx = (Math.random() - 0.5) * 1; this.vy = (Math.random() - 0.5) * 1; this.size = Math.random() * 2 + 1;
+            this.vx = (Math.random() - 0.5) * 1; this.vy = (Math.random() - 0.5) * 1;
+            this.size = Math.random() * 2 + 1;
         }
         draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = '#0ea5e9'; ctx.fill(); }
         update() {
             this.x += this.vx; this.y += this.vy;
-            if (this.x < 0 || this.x > width) this.vx *= -1; if (this.y < 0 || this.y > height) this.vy *= -1;
-            
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
             let dx = mouse.x - this.x, dy = mouse.y - this.y;
-            let distance = Math.sqrt(dx*dx + dy*dy);
+            let distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < mouse.radius) {
-                if (mouse.x < this.x && this.x < width - 10) this.x += 2; if (mouse.x > this.x && this.x > 10) this.x -= 2;
-                if (mouse.y < this.y && this.y < height - 10) this.y += 2; if (mouse.y > this.y && this.y > 10) this.y -= 2;
+                if (mouse.x < this.x && this.x < width - 10) this.x += 2;
+                if (mouse.x > this.x && this.x > 10) this.x -= 2;
+                if (mouse.y < this.y && this.y < height - 10) this.y += 2;
+                if (mouse.y > this.y && this.y > 10) this.y -= 2;
             }
             this.draw();
         }
     }
-    function initParticles() { particles = []; let numberOfParticles = (width * height) / 9000; for (let i = 0; i < numberOfParticles; i++) particles.push(new Particle()); }
+    function initParticles() {
+        particles = [];
+        let n = (width * height) / 9000;
+        for (let k = 0; k < n; k++) particles.push(new Particle());
+    }
     function connect() {
         for (let a = 0; a < particles.length; a++) {
             for (let b = a; b < particles.length; b++) {
-                let distance = ((particles[a].x - particles[b].x)**2) + ((particles[a].y - particles[b].y)**2);
-                if (distance < (width/7) * (height/7)) {
-                    ctx.strokeStyle = 'rgba(14, 165, 233,' + (1 - (distance / 20000)) + ')';
-                    ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particles[a].x, particles[a].y); ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke();
+                let dist = ((particles[a].x - particles[b].x) ** 2) + ((particles[a].y - particles[b].y) ** 2);
+                if (dist < (width / 7) * (height / 7)) {
+                    ctx.strokeStyle = 'rgba(14, 165, 233,' + (1 - (dist / 20000)) + ')';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(particles[a].x, particles[a].y); ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke();
                 }
             }
         }
@@ -712,53 +724,84 @@
     function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, width, height); particles.forEach(p => p.update()); connect(); }
     initParticles(); animate();
 
-    /* === NEW INTELLIGENCE SCAN SCRIPT === */
+    // ── Network Intelligence Scan ───────────────────────────────────────────────
     (function initNetworkIntelligence() {
-        // Fetch IP and Geo Data
-        fetch('https://ipapi.co/json/')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('intel-ip').textContent = data.ip || 'Unknown';
-                document.getElementById('intel-country').textContent = data.country_name || 'Unknown';
-                document.getElementById('intel-city').textContent = data.city || 'Unknown';
-                document.getElementById('intel-isp').textContent = data.org || 'Unknown';
-                document.getElementById('intel-timezone').textContent = data.timezone || 'Unknown';
-            })
-            .catch(() => {
-                const errText = 'Data Unavailable';
-                document.getElementById('intel-ip').textContent = errText;
-                document.getElementById('intel-country').textContent = errText;
-                document.getElementById('intel-city').textContent = errText;
-                document.getElementById('intel-isp').textContent = errText;
-                document.getElementById('intel-timezone').textContent = errText;
-            });
 
-        // Determine Browser & OS
+        // Helper: set value and remove loading animation
+        function setIntelValue(id, value) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = value || 'Unknown';
+                el.classList.remove('loading');
+            }
+        }
+
+        // Determine Browser & OS immediately (no API needed)
         const ua = navigator.userAgent;
         let browser = "Unknown Browser";
         let os = "Unknown OS";
 
-        // Browser check
         if (ua.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
         else if (ua.indexOf("SamsungBrowser") > -1) browser = "Samsung Internet";
         else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) browser = "Opera";
         else if (ua.indexOf("Trident") > -1) browser = "Internet Explorer";
-        else if (ua.indexOf("Edge") > -1 || ua.indexOf("Edg") > -1) browser = "Microsoft Edge";
+        else if (ua.indexOf("Edg") > -1 || ua.indexOf("Edge") > -1) browser = "Microsoft Edge";
         else if (ua.indexOf("Chrome") > -1) browser = "Google Chrome";
         else if (ua.indexOf("Safari") > -1) browser = "Apple Safari";
 
-        // OS check
-        if (ua.indexOf("Win") > -1) os = "Windows";
+        if (/Android/.test(ua)) os = "Android";
+        else if (/iPhone|iPad|iPod/.test(ua)) os = "iOS";
+        else if (ua.indexOf("Win") > -1) os = "Windows";
         else if (ua.indexOf("Mac") > -1) os = "MacOS";
         else if (ua.indexOf("X11") > -1) os = "UNIX";
         else if (ua.indexOf("Linux") > -1) os = "Linux";
-        if (/Android/.test(ua)) os = "Android";
-        if (/iPhone|iPad|iPod/.test(ua)) os = "iOS";
 
         document.getElementById('intel-browser').textContent = browser;
         document.getElementById('intel-os').textContent = os;
+
+        // Primary: ipwho.is — fast, no-key, CORS-friendly
+        fetch('https://ipwho.is/')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) throw new Error('ipwho.is returned failure');
+                setIntelValue('intel-ip', data.ip);
+                setIntelValue('intel-country', data.country);
+                setIntelValue('intel-city', data.city);
+                setIntelValue('intel-isp', data.connection && data.connection.isp ? data.connection.isp : (data.org || 'Unknown'));
+                setIntelValue('intel-timezone', data.timezone && data.timezone.id ? data.timezone.id : 'Unknown');
+            })
+            .catch(() => {
+                // Fallback: ipwhois.app — also free and CORS-friendly
+                fetch('https://ipwhois.app/json/')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (!data.success) throw new Error('ipwhois.app returned failure');
+                        setIntelValue('intel-ip', data.ip);
+                        setIntelValue('intel-country', data.country);
+                        setIntelValue('intel-city', data.city);
+                        setIntelValue('intel-isp', data.isp);
+                        setIntelValue('intel-timezone', data.timezone);
+                    })
+                    .catch(() => {
+                        // Final fallback: ip-api.com (HTTP only, works on most hosts)
+                        fetch('https://ip-api.com/json/?fields=status,message,country,city,isp,timezone,query')
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.status !== 'success') throw new Error('ip-api failed');
+                                setIntelValue('intel-ip', data.query);
+                                setIntelValue('intel-country', data.country);
+                                setIntelValue('intel-city', data.city);
+                                setIntelValue('intel-isp', data.isp);
+                                setIntelValue('intel-timezone', data.timezone);
+                            })
+                            .catch(() => {
+                                const errText = 'Data Unavailable';
+                                ['intel-ip','intel-country','intel-city','intel-isp','intel-timezone'].forEach(id => setIntelValue(id, errText));
+                            });
+                    });
+            });
     })();
-    /* ==================================== */
+    // ── End Intelligence Scan ───────────────────────────────────────────────────
 </script>
 
 <script type="module">
