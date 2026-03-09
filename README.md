@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -2423,42 +2424,53 @@ class Scramble {
   if(sEl){sEl.textContent=`${screen.width}×${screen.height} @${window.devicePixelRatio||1}x`;sEl.classList.add('loaded')}
   const ts=document.getElementById('iTs');
   if(ts)ts.textContent=new Date().toISOString().replace('T',' ').split('.')[0]+' UTC';
-  const ctrl=new AbortController();
-  setTimeout(()=>ctrl.abort(),8000);
-  fetch('https://ipwho.is/',{signal:ctrl.signal})
-    .then(r=>r.json()).then(d=>{
-      if(!d.success)throw 0;
-      sv('intel-ip',d.ip,true);
-      sv('intel-country',`${d.country} (${d.country_code||''})`);
-      sv('intel-city',`${d.city||'—'}, ${d.region||'—'}`);
-      sv('intel-isp',d.connection?.isp||d.connection?.org||d.org||'Unknown');
-      sv('intel-timezone',d.timezone?.id||d.timezone||'Unknown');
-      const s=document.getElementById('scStat');
-      if(s){s.textContent='COMPLETE';s.classList.add('ok')}
-    }).catch(()=>{
-      fetch('https://ipapi.co/json/',{signal:ctrl.signal})
-        .then(r=>r.json()).then(d=>{
-          if(d.error)throw 0;
-          sv('intel-ip',d.ip,true);
-          sv('intel-country',`${d.country_name} (${d.country_code})`);
-          sv('intel-city',`${d.city||'—'}, ${d.region||'—'}`);
-          sv('intel-isp',d.org||'Unknown');
-          sv('intel-timezone',d.timezone||'Unknown');
-          const s=document.getElementById('scStat');
-          if(s){s.textContent='COMPLETE';s.classList.add('ok')}
-        }).catch(()=>{
-          fetch('https://ipinfo.io/json',{signal:ctrl.signal})
-            .then(r=>r.json()).then(d=>{
-              sv('intel-ip',d.ip,true);
-              sv('intel-country',d.country||'Unknown');
-              sv('intel-city',`${d.city||'—'}, ${d.region||'—'}`);
-              sv('intel-isp',d.org||'Unknown');
-              sv('intel-timezone',d.timezone||'Unknown');
-              const s=document.getElementById('scStat');
-              if(s){s.textContent='COMPLETE';s.classList.add('ok')}
-            }).catch(fail);
+  // 6-endpoint fallback chain
+  const APIS=[
+    {url:'https://freeipapi.com/api/json',
+     ok:d=>d&&d.ipAddress,
+     parse:d=>({ip:d.ipAddress,country:`${d.countryName} (${d.countryCode})`,city:`${d.cityName||'—'}, ${d.regionName||'—'}`,isp:d.isp||d.asn||'Unknown',tz:d.timeZone||'Unknown'})},
+    {url:'https://ipwho.is/',
+     ok:d=>d&&d.success&&d.ip,
+     parse:d=>({ip:d.ip,country:`${d.country} (${d.country_code||''})`,city:`${d.city||'—'}, ${d.region||'—'}`,isp:d.connection&&(d.connection.isp||d.connection.org)||d.org||'Unknown',tz:d.timezone&&d.timezone.id||d.timezone||'Unknown'})},
+    {url:'https://ipapi.co/json/',
+     ok:d=>d&&!d.error&&d.ip,
+     parse:d=>({ip:d.ip,country:`${d.country_name||d.country} (${d.country_code||''})`,city:`${d.city||'—'}, ${d.region||'—'}`,isp:d.org||d.asn||'Unknown',tz:d.timezone||'Unknown'})},
+    {url:'https://ipinfo.io/json',
+     ok:d=>d&&d.ip,
+     parse:d=>({ip:d.ip,country:d.country||'Unknown',city:`${d.city||'—'}, ${d.region||'—'}`,isp:d.org||'Unknown',tz:d.timezone||'Unknown'})},
+    {url:'https://api64.ipify.org?format=json',
+     ok:d=>d&&d.ip,
+     parse:d=>({ip:d.ip,country:'—',city:'—',isp:'—',tz:'—'})}
+  ];
+  async function tryApis(){
+    for(var i=0;i<APIS.length;i++){
+      try{
+        var api=APIS[i];
+        var ctrl2=new AbortController();
+        var timer=setTimeout(function(){ctrl2.abort();},5000);
+        var r=await fetch(api.url,{signal:ctrl2.signal,cache:'no-store'});
+        clearTimeout(timer);
+        if(!r.ok) continue;
+        var d=await r.json();
+        if(!api.ok(d)) continue;
+        var p=api.parse(d);
+        sv('intel-ip',p.ip,true);
+        if(p.country!='—') sv('intel-country',p.country);
+        if(p.city!='—') sv('intel-city',p.city);
+        if(p.isp!='—') sv('intel-isp',p.isp);
+        if(p.tz!='—') sv('intel-timezone',p.tz);
+        ['intel-country','intel-city','intel-isp','intel-timezone'].forEach(function(id){
+          var el=document.getElementById(id);
+          if(el&&el.classList.contains('loading')) sv(id,'Unavailable');
         });
-    });
+        var s=document.getElementById('scStat');
+        if(s){s.textContent='COMPLETE';s.classList.add('ok');}
+        return;
+      }catch(e){ continue; }
+    }
+    fail();
+  }
+  tryApis();
 })();
 
 /* ══════════════════════════════════════════
@@ -3022,52 +3034,132 @@ class Scramble {
     return el;
   }
 
-  async function ask(q){
+  // ── OFFLINE SMART RESPONSE ENGINE ──
+  const KB={
+    greet:[
+      "Hello, Operator. RH²-Systems is an elite offensive security firm based in Rajshahi Division, Bangladesh. Founded by **Raj Hridoy** and **Riyad Hasan**. How can I assist you today?",
+      "Welcome to RH²-Systems. I'm RH²-AI — your encrypted security intelligence assistant. Ask me anything about our capabilities, team, or how we can secure your infrastructure."
+    ],
+    pentest:[
+      "Our **Penetration Testing** service covers Web Applications, Mobile Apps, APIs, Cloud Infrastructure, and Network systems. We follow OWASP Top 10, PTES, and NIST frameworks. Every engagement ends with a detailed vulnerability report and remediation guide.",
+      "We conduct **manual + automated penetration tests** — not just scanner runs. Our team identifies business logic flaws, auth bypasses, injection vectors, and misconfigurations that automated tools miss. We've completed **150+ engagements** with zero client breaches.",
+      "Penetration testing with RH²-Systems includes: reconnaissance, threat modeling, exploitation, post-exploitation analysis, and a full written report with CVSS scores and remediation steps."
+    ],
+    redteam:[
+      "Our **Red Team Operations** simulate real nation-state APT attacks against your organization. We replicate the full kill chain — initial access, lateral movement, privilege escalation, persistence, and data exfiltration — without your defenders knowing when it starts.",
+      "Red teaming goes beyond penetration testing. We test your **people, processes, and technology** simultaneously. Our operators use custom tooling, living-off-the-land techniques, and social engineering to find gaps your blue team hasn't considered.",
+      "RH²-Systems Red Team engagements follow the **MITRE ATT&CK** framework. We provide a full adversary simulation report with TTPs used, detection gaps identified, and a prioritized hardening roadmap."
+    ],
+    secure:[
+      "Our **Secure Engineering** service embeds security into your development lifecycle. We do DevSecOps integration, Zero Trust architecture design, source code review, and CI/CD pipeline hardening.",
+      "Secure Engineering covers: threat modeling during design, static and dynamic code analysis, dependency vulnerability scanning, secrets management, container security, and infrastructure-as-code review.",
+      "We help teams shift security **left** — catching vulnerabilities at the design and code stage instead of after deployment. This reduces remediation cost by up to 10x."
+    ],
+    team:[
+      "RH²-Systems was founded by two elite operators:\n\n**Raj Hridoy** — Cybersecurity Engineer specializing in secure architecture, cloud security, and DevSecOps. He bridges high-level software development with low-level security protocols.\n\n**Riyad Hasan** — Ethical Hacker focused on penetration testing, network forensics, and exploit development. He specializes in breaking systems to make them unbreakable.",
+      "Our founders **Raj Hridoy** and **Riyad Hasan** combine deep technical expertise across offensive and defensive security. Both are based in Rajshahi Division, Bangladesh and operate globally."
+    ],
+    cost:[
+      "Engagement pricing depends on scope, duration, and complexity. We offer competitive rates for the Bangladesh market and internationally. **Contact us directly** for a confidential quote — use the contact form and describe your infrastructure and goals.",
+      "We don't publish fixed pricing because every engagement is scoped individually. Factors include: number of targets, testing duration, report depth, and compliance requirements. Fill out our contact form for a free scoping call.",
+      "Pricing is customized per engagement. We work with startups, SMEs, and enterprise clients. Reach out via the **contact form** with your project details and we'll respond within 24 hours."
+    ],
+    stats:[
+      "RH²-Systems track record: **150+ security engagements** completed, **100% client confidentiality** maintained, **24/7 incident support** available, **zero client breaches** post-engagement. We stand behind our work.",
+      "Our numbers speak: 150+ engagements across web, mobile, cloud, and network targets. Every single client has maintained confidentiality. Zero breaches after our hardening recommendations."
+    ],
+    contact:[
+      "You can reach RH²-Systems through the **secure contact form** on this page. All submissions are end-to-end encrypted via Firebase. We respond within 24 hours. For urgent incidents, we provide 24/7 support.",
+      "Use the **contact form** at the bottom of this page for project inquiries. Describe your infrastructure, goals, and timeline. All communications are treated with full confidentiality."
+    ],
+    location:[
+      "RH²-Systems is headquartered in **Rajshahi Division, Bangladesh**. We operate globally — our clients span multiple countries across Asia, the Middle East, and beyond.",
+      "Based in **Rajshahi, Bangladesh**. We serve clients globally with remote and on-site engagement options available."
+    ],
+    methodology:[
+      "Our methodology follows industry standards: **Reconnaissance → Threat Modeling → Exploitation → Post-Exploitation → Reporting → Remediation Verification**. Every phase is documented and every finding is validated before reporting.",
+      "We use a structured approach: passive and active recon, manual vulnerability discovery, controlled exploitation, impact assessment, and detailed reporting. We never cause unplanned outages or data loss."
+    ],
+    owasp:[
+      "Yes — all our web and API assessments are aligned with **OWASP Top 10**. We test for injection flaws, broken authentication, sensitive data exposure, XXE, broken access control, security misconfigurations, XSS, insecure deserialization, vulnerable components, and insufficient logging.",
+      "We cover the full **OWASP Top 10** and go beyond it — including business logic testing, race conditions, and API-specific vulnerabilities not covered by the standard list."
+    ],
+    report:[
+      "Every engagement produces a **comprehensive written report** including: executive summary (for management), technical findings with CVSS scores, proof-of-concept evidence, remediation recommendations, and a retest verification option.",
+      "Our reports are structured for two audiences: **executive summaries** with business risk context, and **technical deep-dives** with reproduction steps, impact analysis, and specific fix recommendations."
+    ],
+    compliance:[
+      "We help organizations prepare for and achieve **ISO 27001, PCI-DSS, SOC 2, GDPR, and HIPAA** compliance through security assessments, gap analysis, and remediation support.",
+      "Our security assessments map findings to compliance frameworks. Whether you need **PCI-DSS** for payment systems or **ISO 27001** for enterprise certification, we align our reports to your compliance requirements."
+    ],
+    tools:[
+      "Our toolkit includes industry-standard and custom tools: Burp Suite Pro, Metasploit, Cobalt Strike concepts, custom Python/Go exploit scripts, Nmap, Nuclei, and proprietary RH²-Systems recon tooling.",
+      "We use a combination of commercial tools, open-source frameworks, and **custom-built tooling** developed in-house. For red team ops we rely heavily on living-off-the-land techniques to evade detection."
+    ],
+    confidential:[
+      "**Confidentiality is absolute**. We sign NDAs before every engagement. No client names, findings, or engagement details are ever disclosed. Our 100% confidentiality record has held across 150+ engagements.",
+      "Every engagement operates under strict NDA. We use encrypted communications, air-gapped reporting systems, and secure data deletion after engagement close. Your security posture stays private."
+    ],
+    fallback:[
+      "That's a great question. For detailed information on this topic, I'd recommend reaching out directly via our **contact form** — our operators can give you a precise, tailored answer.",
+      "I want to give you an accurate answer on that. Please use the **contact form** to reach Raj or Riyad directly — they'll respond within 24 hours with exactly what you need.",
+      "For the most accurate information on that, contact our team directly. Use the **secure contact form** on this page — all inquiries are treated with full confidentiality."
+    ]
+  };
+
+  function match(q){
+    const t=q.toLowerCase();
+    if(/hello|hi|hey|greet|start|who are you/i.test(t)) return 'greet';
+    if(/pentest|penetrat|web test|api test|vuln|scan|owasp|injection|xss|sql/i.test(t)) return 'pentest';
+    if(/red.?team|apt|adversar|attack sim|mitre|kill.?chain|nation.?state/i.test(t)) return 'redteam';
+    if(/secure.?eng|devsecops|code review|zero.?trust|cicd|pipeline|architecture/i.test(t)) return 'secure';
+    if(/team|founder|raj|riyad|who built|operator|staff|people/i.test(t)) return 'team';
+    if(/cost|price|pric|how much|fee|rate|budget|afford|cheap|expens/i.test(t)) return 'cost';
+    if(/stat|number|how many|engag|breach|track.?record|150|record/i.test(t)) return 'stats';
+    if(/contact|reach|email|phone|touch|hire|book|schedule|inquiry/i.test(t)) return 'contact';
+    if(/location|where|bangladesh|rajshahi|based|country|office/i.test(t)) return 'location';
+    if(/method|process|approach|how do you work|step|phase|workflow/i.test(t)) return 'methodology';
+    if(/owasp|top.?10|web standard/i.test(t)) return 'owasp';
+    if(/report|deliverable|document|findings|output/i.test(t)) return 'report';
+    if(/complian|iso|pci|soc2|gdpr|hipaa|certif|audit/i.test(t)) return 'compliance';
+    if(/tool|software|burp|metasploit|nmap|framework|toolkit/i.test(t)) return 'tools';
+    if(/confidential|nda|secret|private|disclos|secure comm/i.test(t)) return 'confidential';
+    if(/service|what do you do|offer|capabilit|speciali/i.test(t)) return 'pentest';
+    return 'fallback';
+  }
+
+  const used={};
+  function getReply(key){
+    const arr=KB[key]||KB.fallback;
+    if(!used[key]) used[key]=0;
+    const reply=arr[used[key]%arr.length];
+    used[key]++;
+    return reply;
+  }
+
+  function ask(q){
     send.disabled=true;inp.disabled=true;
     const typing=addTyping();
-
-    // Build conversation history
-    conversationHistory.push({role:'user',content:q});
-    // Keep last 10 exchanges (20 messages)
-    if(conversationHistory.length>20) conversationHistory=conversationHistory.slice(-20);
-
-    try{
-      const res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:400,
-          system:MODES[currentMode].system,
-          messages:conversationHistory
-        })
-      });
-      const data=await res.json();
+    // Simulate thinking delay 0.8–1.4s for realism
+    const delay=800+Math.random()*600;
+    setTimeout(()=>{
       typing.remove();
-      if(data.content?.[0]?.text){
-        const reply=data.content[0].text;
-        conversationHistory.push({role:'assistant',content:reply});
-        addMsg(reply,'bot');
-        // If quote mode and enough exchanges, show CTA
-        if(currentMode==='quote'&&conversationHistory.length>=6){
-          setTimeout(()=>{
-            const cta=document.createElement('div');
-            cta.className='msg bot';
-            cta.innerHTML='Ready to proceed? <a href="#contact" onclick="document.getElementById(\'chatBox\').classList.remove(\'on\')">Fill out our secure contact form →</a>';
-            msgs.appendChild(cta);
-            msgs.scrollTop=msgs.scrollHeight;
-          },800);
-        }
-      } else {
-        addMsg('Secure channel disrupted. Please try again.','bot');
+      const key=match(q);
+      const reply=getReply(key);
+      addMsg(reply,'bot');
+      // Quote CTA after cost questions
+      if(key==='cost'||key==='contact'){
+        setTimeout(()=>{
+          const cta=document.createElement('div');
+          cta.className='msg bot';
+          cta.innerHTML='Ready to start? <a href="#contact" onclick="document.getElementById(\'chatBox\').classList.remove(\'on\')">Use our secure contact form →</a>';
+          msgs.appendChild(cta);
+          msgs.scrollTop=msgs.scrollHeight;
+        },700);
       }
-    }catch(e){
-      typing.remove();
-      addMsg('Connection error. Please use our contact form directly.','bot');
-    }finally{
       send.disabled=false;inp.disabled=false;
       inp.focus();
-    }
+    },delay);
   }
 
   function submit(){
@@ -3445,4 +3537,3 @@ form.addEventListener('submit',async e=>{
 </main>
 </body>
 </html>
-
