@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -3446,3 +3445,4 @@ form.addEventListener('submit',async e=>{
 </main>
 </body>
 </html>
+
