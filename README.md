@@ -231,6 +231,94 @@
         box-shadow: 0 0 20px var(--accent-glow);
     }
 
+    /* === NEW INTELLIGENCE SCAN FEATURE STYLES === */
+    .intel-box {
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(2, 6, 23, 0.95) 100%);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        max-width: 800px;
+        margin: 50px auto 0;
+        position: relative;
+        overflow: hidden;
+        transition: 0.4s;
+    }
+    .intel-box:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 30px rgba(14, 165, 233, 0.15);
+    }
+    .intel-header {
+        background: rgba(14, 165, 233, 0.08);
+        padding: 15px 25px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+    .pulse-dot {
+        width: 10px; height: 10px;
+        background-color: var(--accent);
+        border-radius: 50%;
+        animation: activePulse 1.5s infinite;
+    }
+    .intel-content {
+        padding: 25px;
+        max-height: 320px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .intel-content::-webkit-scrollbar { width: 6px; }
+    .intel-content::-webkit-scrollbar-track { background: var(--bg-deep); }
+    .intel-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+    
+    .intel-row {
+        display: flex;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+        font-size: 0.95rem;
+    }
+    .intel-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .intel-label {
+        color: var(--text-muted);
+        width: 140px;
+        flex-shrink: 0;
+    }
+    .intel-value {
+        color: #fff;
+        word-break: break-all;
+    }
+    .scan-line {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 2px;
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent-glow);
+        animation: scanMovement 4s linear infinite;
+        opacity: 0.5;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    @keyframes activePulse {
+        0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--accent-glow); }
+        50% { opacity: 0.3; box-shadow: none; }
+    }
+    @keyframes scanMovement {
+        0% { top: 0; opacity: 0; }
+        10% { opacity: 0.8; }
+        90% { opacity: 0.8; }
+        100% { top: 100%; opacity: 0; }
+    }
+    /* =========================================== */
+
     @media(max-width: 900px) {
          .hero h1 { font-size: 3rem; }
          .contact-grid { grid-template-columns: 1fr; }
@@ -282,6 +370,12 @@
         h2 { font-size: 2rem; margin-bottom: 0.5rem; }
         
         footer { margin-top: 60px; padding: 60px 0 30px; }
+
+        /* Intelligence Feature Responsive */
+        .intel-row { flex-direction: column; gap: 5px; padding-bottom: 15px; }
+        .intel-label { width: auto; font-size: 0.85rem; }
+        .intel-value { font-size: 1rem; }
+        .intel-content { padding: 20px; }
     }
 
     @media(max-width: 480px) {
@@ -440,6 +534,52 @@
     </div>
 </section>
 
+<section id="intelligence">
+    <div class="container">
+        <div class="fade-up" style="text-align: center;">
+            <h2>Network Intelligence Scan</h2>
+            <p>Real-time telemetry analysis of your active connection to our secure servers.</p>
+        </div>
+        
+        <div class="intel-box fade-up">
+            <div class="scan-line"></div>
+            <div class="intel-header mono">
+                <span>> RH²_SYS_TELEMETRY</span>
+                <span class="pulse-dot"></span>
+            </div>
+            <div class="intel-content mono">
+                <div class="intel-row">
+                    <span class="intel-label">IP Address:</span> 
+                    <span class="intel-value" id="intel-ip">Initiating scan...</span>
+                </div>
+                <div class="intel-row">
+                    <span class="intel-label">Country:</span> 
+                    <span class="intel-value" id="intel-country">Initiating scan...</span>
+                </div>
+                <div class="intel-row">
+                    <span class="intel-label">City:</span> 
+                    <span class="intel-value" id="intel-city">Initiating scan...</span>
+                </div>
+                <div class="intel-row">
+                    <span class="intel-label">ISP / Network:</span> 
+                    <span class="intel-value" id="intel-isp">Initiating scan...</span>
+                </div>
+                <div class="intel-row">
+                    <span class="intel-label">Timezone:</span> 
+                    <span class="intel-value" id="intel-timezone">Initiating scan...</span>
+                </div>
+                <div class="intel-row">
+                    <span class="intel-label">Browser:</span> 
+                    <span class="intel-value" id="intel-browser">Initiating scan...</span>
+                </div>
+                <div class="intel-row">
+                    <span class="intel-label">Operating System:</span> 
+                    <span class="intel-value" id="intel-os">Initiating scan...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <section id="contact">
     <div class="container">
         <div class="contact-grid">
@@ -571,6 +711,54 @@
     }
     function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, width, height); particles.forEach(p => p.update()); connect(); }
     initParticles(); animate();
+
+    /* === NEW INTELLIGENCE SCAN SCRIPT === */
+    (function initNetworkIntelligence() {
+        // Fetch IP and Geo Data
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('intel-ip').textContent = data.ip || 'Unknown';
+                document.getElementById('intel-country').textContent = data.country_name || 'Unknown';
+                document.getElementById('intel-city').textContent = data.city || 'Unknown';
+                document.getElementById('intel-isp').textContent = data.org || 'Unknown';
+                document.getElementById('intel-timezone').textContent = data.timezone || 'Unknown';
+            })
+            .catch(() => {
+                const errText = 'Data Unavailable';
+                document.getElementById('intel-ip').textContent = errText;
+                document.getElementById('intel-country').textContent = errText;
+                document.getElementById('intel-city').textContent = errText;
+                document.getElementById('intel-isp').textContent = errText;
+                document.getElementById('intel-timezone').textContent = errText;
+            });
+
+        // Determine Browser & OS
+        const ua = navigator.userAgent;
+        let browser = "Unknown Browser";
+        let os = "Unknown OS";
+
+        // Browser check
+        if (ua.indexOf("Firefox") > -1) browser = "Mozilla Firefox";
+        else if (ua.indexOf("SamsungBrowser") > -1) browser = "Samsung Internet";
+        else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) browser = "Opera";
+        else if (ua.indexOf("Trident") > -1) browser = "Internet Explorer";
+        else if (ua.indexOf("Edge") > -1 || ua.indexOf("Edg") > -1) browser = "Microsoft Edge";
+        else if (ua.indexOf("Chrome") > -1) browser = "Google Chrome";
+        else if (ua.indexOf("Safari") > -1) browser = "Apple Safari";
+
+        // OS check
+        if (ua.indexOf("Win") > -1) os = "Windows";
+        else if (ua.indexOf("Mac") > -1) os = "MacOS";
+        else if (ua.indexOf("X11") > -1) os = "UNIX";
+        else if (ua.indexOf("Linux") > -1) os = "Linux";
+        if (/Android/.test(ua)) os = "Android";
+        if (/iPhone|iPad|iPod/.test(ua)) os = "iOS";
+
+        document.getElementById('intel-browser').textContent = browser;
+        document.getElementById('intel-os').textContent = os;
+    })();
+    /* ==================================== */
 </script>
 
 <script type="module">
