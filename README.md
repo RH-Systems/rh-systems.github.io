@@ -1,4 +1,5 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -50,9 +51,9 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--ff-body);font-size:1rem;line-height:1.7;overflow-x:hidden;cursor:none}
-a{text-decoration:none;color:inherit}
+a{text-decoration:none;color:inherit;cursor:pointer}
 ul{list-style:none}
-button{cursor:none;border:none;background:none;font-family:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
 img{display:block;max-width:100%}
 
 /* =============================================
@@ -119,14 +120,14 @@ body::after{
 /* =============================================
    SCROLL-TO-TOP
 ============================================= */
-#stt{
+#stt{cursor:pointer;
   position:fixed;bottom:32px;right:32px;z-index:500;
   width:48px;height:48px;border-radius:50%;
   background:var(--bg3);border:1px solid var(--border2);
   color:var(--green);display:flex;align-items:center;justify-content:center;
   font-size:1.1rem;opacity:0;pointer-events:none;
   transition:opacity 0.3s,transform 0.3s,box-shadow 0.3s;
-  box-shadow:0 0 20px var(--g-green);cursor:none
+  box-shadow:0 0 20px var(--g-green);cursor:pointer
 }
 #stt.show{opacity:1;pointer-events:all}
 #stt:hover{transform:translateY(-4px);box-shadow:0 0 40px var(--g-green)}
@@ -160,13 +161,13 @@ section{padding:130px 0;position:relative}
 /* =============================================
    BUTTONS
 ============================================= */
-.btn{
+.btn{cursor:pointer;
   display:inline-flex;align-items:center;gap:10px;
   padding:14px 32px;border-radius:var(--r);
   font-family:var(--ff-mono);font-size:0.78rem;
   letter-spacing:0.12em;text-transform:uppercase;
   transition:all 0.3s var(--ease);position:relative;overflow:hidden;
-  cursor:none
+  cursor:pointer
 }
 .btn-g{
   background:var(--green);color:#010608;
@@ -226,7 +227,7 @@ nav{height:100%;display:flex;align-items:center;justify-content:space-between}
 .navlinks a:hover{color:var(--green)}
 .navlinks a:hover::after{right:0}
 
-.hbg{display:none;flex-direction:column;gap:5px;padding:6px;cursor:none}
+.hbg{display:none;flex-direction:column;gap:5px;padding:6px;cursor:pointer}
 .hbg span{display:block;width:26px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s var(--ease)}
 .hbg.on span:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--green)}
 .hbg.on span:nth-child(2){opacity:0;transform:scaleX(0)}
@@ -750,13 +751,13 @@ nav{height:100%;display:flex;align-items:center;justify-content:space-between}
 }
 .field textarea{resize:vertical;min-height:140px}
 
-.fsub{
+.fsub{cursor:pointer;
   width:100%;padding:17px;
   background:var(--green);color:#010608;
   border-radius:var(--r);border:none;
   font-family:var(--ff-mono);font-size:0.8rem;font-weight:700;
   letter-spacing:0.16em;text-transform:uppercase;
-  transition:all 0.3s var(--ease);cursor:none;
+  transition:all 0.3s var(--ease);cursor:pointer;
   position:relative;overflow:hidden;
   box-shadow:0 0 30px var(--g-green)
 }
@@ -857,7 +858,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:90px 0 4
   .fc{padding:32px 24px}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .hero-h1{font-size:clamp(2.8rem,9vw,4.5rem)}
-  .hero-btns .btn{width:100%;max-width:320px}
+  .hero-btns .btn{cursor:pointer;width:100%;max-width:320px}
   .irow{flex-direction:column;gap:3px}
   .ikey{min-width:auto}
   body{cursor:auto}
@@ -1114,7 +1115,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:90px 0 4
     </div>
 
     <div class="team-grid">
-      <article class="tc rev d1">
+      <a href="https://rh-systems.github.io/Raj-Hridoy/" target="_blank" rel="noopener noreferrer" class="tc rev d1" aria-label="View Raj Hridoy profile" style="display:flex;flex-direction:column;text-decoration:none;color:inherit;">
         <div class="tc-head">
           <div class="av">RH</div>
           <div class="tc-meta">
@@ -1130,14 +1131,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:90px 0 4
             <span class="ttag">Cloud Security</span>
             <span class="ttag">DevSecOps</span>
           </div>
-          <a href="https://rh-systems.github.io/Raj-Hridoy/" class="tc-link" target="_blank" rel="noopener noreferrer" aria-label="View Raj Hridoy profile">
+          <span class="tc-link">
             View Profile
             <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
+          </span>
         </div>
-      </article>
+      </a>
 
-      <article class="tc rev d2">
+      <a href="https://rh-systems.github.io/Riyad-Hasan/" target="_blank" rel="noopener noreferrer" class="tc rev d2" aria-label="View Riyad Hasan profile" style="display:flex;flex-direction:column;text-decoration:none;color:inherit;">
         <div class="tc-head">
           <div class="av">RH</div>
           <div class="tc-meta">
@@ -1153,12 +1154,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:90px 0 4
             <span class="ttag">Red Teaming</span>
             <span class="ttag">Exploit Dev</span>
           </div>
-          <a href="https://rh-systems.github.io/Riyad-Hasan/" class="tc-link" target="_blank" rel="noopener noreferrer" aria-label="View Riyad Hasan profile">
+          <span class="tc-link">
             View Profile
             <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
+          </span>
         </div>
-      </article>
+      </a>
     </div>
   </div>
 </section>
