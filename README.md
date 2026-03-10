@@ -11,7 +11,11 @@
 <meta property="og:description" content="Advanced penetration testing, red team operations, and secure engineering for high-risk enterprise infrastructure.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://rh2-systems.com/">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%237c3aff' rx='3'/><text y='23' x='3' font-size='18' font-family='monospace' fill='%23fff' font-weight='900'>R²</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237c3aff'/%3E%3Cstop offset='100%25' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3Cfilter id='glow'%3E%3CfeGaussianBlur stdDeviation='1.5' result='blur'/%3E%3CfeMerge%3E%3CfeMergeNode in='blur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Crect width='64' height='64' rx='12' fill='%230a0414'/%3E%3Cpath d='M32 6 L54 16 L54 34 Q54 50 32 58 Q10 50 10 34 L10 16 Z' fill='url(%23g)' opacity='0.15'/%3E%3Cpath d='M32 8 L52 17 L52 34 Q52 48 32 56 Q12 48 12 34 L12 17 Z' fill='none' stroke='%237c3aff' stroke-width='1.5' opacity='0.8'/%3E%3Ctext x='13' y='38' font-family='Arial Black,sans-serif' font-size='19' font-weight='900' fill='%23ffffff' filter='url(%23glow)' letter-spacing='-1'%3ERH%3C/text%3E%3Ctext x='39' y='30' font-family='Arial,sans-serif' font-size='10' font-weight='900' fill='%237c3aff'%3E2%3C/text%3E%3Cline x1='13' y1='42' x2='51' y2='42' stroke='%237c3aff' stroke-width='1' opacity='0.6'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" sizes="32x32" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a0414'/%3E%3Cpath d='M32 8 L52 17 L52 34 Q52 48 32 56 Q12 48 12 34 L12 17 Z' fill='none' stroke='%237c3aff' stroke-width='1.5' opacity='0.8'/%3E%3Ctext x='13' y='38' font-family='Arial Black,sans-serif' font-size='19' font-weight='900' fill='%23ffffff' letter-spacing='-1'%3ERH%3C/text%3E%3Ctext x='39' y='30' font-family='Arial,sans-serif' font-size='10' font-weight='900' fill='%237c3aff'%3E2%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230a0414'/%3E%3Cpath d='M90 20 L150 48 L150 100 Q150 140 90 160 Q30 140 30 100 L30 48 Z' fill='%237c3aff' opacity='0.2'/%3E%3Cpath d='M90 22 L148 50 L148 100 Q148 138 90 158 Q32 138 32 100 L32 50 Z' fill='none' stroke='%237c3aff' stroke-width='3' opacity='0.9'/%3E%3Ctext x='36' y='112' font-family='Arial Black,sans-serif' font-size='56' font-weight='900' fill='%23ffffff' letter-spacing='-2'%3ERH%3C/text%3E%3Ctext x='110' y='80' font-family='Arial,sans-serif' font-size='28' font-weight='900' fill='%237c3aff'%3E2%3C/text%3E%3Cline x1='36' y1='122' x2='144' y2='122' stroke='%237c3aff' stroke-width='3' opacity='0.7'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0414">
+<meta name="msapplication-TileColor" content="#7c3aff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
@@ -802,7 +806,7 @@ nav{height:100%;display:flex;align-items:center;justify-content:space-between}
 }
 .it-prompt code{font-family:var(--ff-m);font-size:0.72rem;color:rgba(124,58,255,0.7)}
 #scStat{font-family:var(--ff-m);font-size:0.63rem;color:var(--dim)}
-.ok{color:#28c840 !important}.fail{color:#ff4060 !important}
+.ok{color:#28c840 !important}.fail{color:#ff4060 !important}.warn{color:#ffab00 !important}
 
 /* Body */
 .it-body{padding:14px 22px 16px;max-height:290px;overflow-y:auto}
@@ -2426,49 +2430,93 @@ class Scramble {
   if(ts)ts.textContent=new Date().toISOString().replace('T',' ').split('.')[0]+' UTC';
   // 6-endpoint fallback chain
   const APIS=[
-    {url:'https://freeipapi.com/api/json',
-     ok:d=>d&&d.ipAddress,
-     parse:d=>({ip:d.ipAddress,country:`${d.countryName} (${d.countryCode})`,city:`${d.cityName||'—'}, ${d.regionName||'—'}`,isp:d.isp||d.asn||'Unknown',tz:d.timeZone||'Unknown'})},
-    {url:'https://ipwho.is/',
-     ok:d=>d&&d.success&&d.ip,
-     parse:d=>({ip:d.ip,country:`${d.country} (${d.country_code||''})`,city:`${d.city||'—'}, ${d.region||'—'}`,isp:d.connection&&(d.connection.isp||d.connection.org)||d.org||'Unknown',tz:d.timezone&&d.timezone.id||d.timezone||'Unknown'})},
+    // Best: full data including ISP
     {url:'https://ipapi.co/json/',
-     ok:d=>d&&!d.error&&d.ip,
-     parse:d=>({ip:d.ip,country:`${d.country_name||d.country} (${d.country_code||''})`,city:`${d.city||'—'}, ${d.region||'—'}`,isp:d.org||d.asn||'Unknown',tz:d.timezone||'Unknown'})},
+     ok:function(d){return d&&!d.error&&d.ip&&d.country_name;},
+     parse:function(d){return {
+       ip:d.ip,
+       country:(d.country_name||'')+(d.country_code?' ('+d.country_code+')':''),
+       city:(d.city||'—')+', '+(d.region||'—'),
+       isp:d.org||d.asn||'—',
+       tz:d.timezone||'—'
+     };}},
+    // Good: full data
+    {url:'https://ipwho.is/',
+     ok:function(d){return d&&d.success&&d.ip;},
+     parse:function(d){return {
+       ip:d.ip,
+       country:(d.country||'')+(d.country_code?' ('+d.country_code+')':''),
+       city:(d.city||'—')+', '+(d.region||'—'),
+       isp:(d.connection&&(d.connection.isp||d.connection.org))||d.org||'—',
+       tz:(d.timezone&&d.timezone.id)||d.timezone||'—'
+     };}},
+    // Good: full data
+    {url:'https://freeipapi.com/api/json',
+     ok:function(d){return d&&d.ipAddress;},
+     parse:function(d){return {
+       ip:d.ipAddress,
+       country:(d.countryName||'')+(d.countryCode?' ('+d.countryCode+')':''),
+       city:(d.cityName||'—')+', '+(d.regionName||'—'),
+       isp:d.isp||d.asn||'—',
+       tz:d.timeZone||'—'
+     };}},
+    // Fallback: full data
     {url:'https://ipinfo.io/json',
-     ok:d=>d&&d.ip,
-     parse:d=>({ip:d.ip,country:d.country||'Unknown',city:`${d.city||'—'}, ${d.region||'—'}`,isp:d.org||'Unknown',tz:d.timezone||'Unknown'})},
+     ok:function(d){return d&&d.ip;},
+     parse:function(d){return {
+       ip:d.ip,
+       country:d.country||'—',
+       city:(d.city||'—')+', '+(d.region||'—'),
+       isp:d.org||'—',
+       tz:d.timezone||'—'
+     };}},
+    // Last resort: IP only
     {url:'https://api64.ipify.org?format=json',
-     ok:d=>d&&d.ip,
-     parse:d=>({ip:d.ip,country:'—',city:'—',isp:'—',tz:'—'})}
+     ok:function(d){return d&&d.ip;},
+     parse:function(d){return {ip:d.ip,country:'—',city:'—',isp:'—',tz:'—'};}}
   ];
+  // Track which fields are filled
+  var filled={ip:false,country:false,city:false,isp:false,tz:false};
+
+  function svField(id,val,isIp){
+    if(!val||val=='—'||val=='Unknown') return false;
+    sv(id,val,isIp||false);
+    return true;
+  }
+
   async function tryApis(){
     for(var i=0;i<APIS.length;i++){
+      // Stop if all fields filled
+      if(filled.ip&&filled.country&&filled.city&&filled.isp&&filled.tz) break;
       try{
         var api=APIS[i];
         var ctrl2=new AbortController();
-        var timer=setTimeout(function(){ctrl2.abort();},5000);
+        var t2=setTimeout(function(){ctrl2.abort();},6000);
         var r=await fetch(api.url,{signal:ctrl2.signal,cache:'no-store'});
-        clearTimeout(timer);
-        if(!r.ok) continue;
+        clearTimeout(t2);
+        if(!r||!r.ok) continue;
         var d=await r.json();
         if(!api.ok(d)) continue;
         var p=api.parse(d);
-        sv('intel-ip',p.ip,true);
-        if(p.country!='—') sv('intel-country',p.country);
-        if(p.city!='—') sv('intel-city',p.city);
-        if(p.isp!='—') sv('intel-isp',p.isp);
-        if(p.tz!='—') sv('intel-timezone',p.tz);
-        ['intel-country','intel-city','intel-isp','intel-timezone'].forEach(function(id){
-          var el=document.getElementById(id);
-          if(el&&el.classList.contains('loading')) sv(id,'Unavailable');
-        });
-        var s=document.getElementById('scStat');
-        if(s){s.textContent='COMPLETE';s.classList.add('ok');}
-        return;
+        if(!filled.ip&&p.ip){sv('intel-ip',p.ip,true);filled.ip=true;}
+        if(!filled.country&&p.country&&p.country!='—'){sv('intel-country',p.country);filled.country=true;}
+        if(!filled.city&&p.city&&p.city!='—'){sv('intel-city',p.city);filled.city=true;}
+        if(!filled.isp&&p.isp&&p.isp!='—'){sv('intel-isp',p.isp);filled.isp=true;}
+        if(!filled.tz&&p.tz&&p.tz!='—'){sv('intel-timezone',p.tz);filled.tz=true;}
       }catch(e){ continue; }
     }
-    fail();
+    // Fill any still-missing fields
+    if(!filled.ip) sv('intel-ip','Unavailable',false);
+    if(!filled.country) sv('intel-country','Unavailable');
+    if(!filled.city) sv('intel-city','Unavailable');
+    if(!filled.isp) sv('intel-isp','Unavailable');
+    if(!filled.tz) sv('intel-timezone','Unavailable');
+    var s=document.getElementById('scStat');
+    if(s){
+      var allOk=filled.ip&&filled.country;
+      s.textContent=allOk?'COMPLETE':'PARTIAL';
+      s.classList.add(allOk?'ok':'warn');
+    }
   }
   tryApis();
 })();
