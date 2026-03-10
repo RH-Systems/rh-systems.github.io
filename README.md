@@ -307,6 +307,41 @@ nav{height:100%;display:flex;align-items:center;justify-content:space-between}
 .tbar-f{height:100%;width:0;background:linear-gradient(90deg,var(--ember),var(--ember2),var(--ember3));box-shadow:0 0 10px var(--ember);transition:width 3s cubic-bezier(.4,0,.2,1) .5s}
 .tty2-foot{padding:8px 18px;border-top:1px solid rgba(255,255,255,.03);display:flex;justify-content:space-between;font-size:.54rem;color:var(--dim);background:rgba(255,45,0,.02)}
 
+/* ══ CREEP ENHANCEMENTS ══ */
+/* Glitch title */
+.intel-glitch-title{position:relative;display:inline-block}
+@keyframes glitch1{0%,95%,100%{clip-path:inset(0 0 100% 0);transform:translate(0)}96%{clip-path:inset(30% 0 50% 0);transform:translate(-4px,1px)}97%{clip-path:inset(60% 0 10% 0);transform:translate(4px,-2px)}98%{clip-path:inset(10% 0 80% 0);transform:translate(-2px,2px)}}
+.intel-glitch-title::before{content:attr(data-text);position:absolute;left:0;top:0;color:var(--ember);opacity:.7;animation:glitch1 6s step-end infinite;pointer-events:none}
+/* Creep banner */
+.creep-banner{display:flex;align-items:center;gap:14px;margin:2.5rem auto;max-width:640px;padding:14px 22px;border:1px solid rgba(255,45,0,.3);background:rgba(255,45,0,.05);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ember);animation:crp-pulse 3s ease infinite}
+@keyframes crp-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,45,0,.0)}50%{box-shadow:0 0 20px rgba(255,45,0,.15)}}
+.creep-icon{font-size:1rem;animation:blink 1.2s step-end infinite}
+/* Threat verdict card */
+.threat-verdict{border:1px solid rgba(255,45,0,.18);background:rgba(255,45,0,.03);margin-bottom:2rem;overflow:hidden}
+.tv-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid rgba(255,45,0,.1);background:rgba(255,45,0,.06)}
+.tv-label{font-size:.5rem;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.tv-badge{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--void);background:var(--dim);padding:3px 10px;animation:badge-scan 2s ease infinite}
+.tv-badge.danger{background:var(--ember);color:var(--void);animation:none;box-shadow:0 0 14px rgba(255,45,0,.5)}
+.tv-badge.medium{background:#ffaa00;color:#000;animation:none}
+@keyframes badge-scan{0%,100%{opacity:.5}50%{opacity:1}}
+.tv-findings{padding:8px 18px 12px}
+.tv-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.tv-row:last-child{border-bottom:none}
+.tv-k{font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.tv-v{font-size:.66rem;color:#9ea8ba;text-align:right}
+.tv-v.exposed{color:#ff4444!important;text-shadow:0 0 8px rgba(255,60,60,.4)}
+.tv-v.partial{color:#ffaa00!important}
+.tv-v.protected{color:#28c840!important}
+.tv-footer{padding:8px 18px;font-size:.54rem;letter-spacing:.06em;color:rgba(255,45,0,.5);border-top:1px solid rgba(255,45,0,.06);background:rgba(255,45,0,.02)}
+.tv-footer::before{content:'// '}
+/* Profiled reveal */
+.profiled-reveal{border-top:1px solid rgba(255,45,0,.15);background:rgba(255,45,0,.06);padding:16px 18px;opacity:0;transform:translateY(8px);transition:opacity .8s ease,transform .8s ease;pointer-events:none}
+.profiled-reveal.show{opacity:1;transform:none;pointer-events:auto}
+.pr-inner{display:flex;align-items:center;gap:14px}
+.pr-icon{font-size:1.2rem;color:var(--ember);animation:blink 1.5s step-end infinite}
+.pr-line{font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ember);text-shadow:0 0 20px rgba(255,45,0,.6)}
+.pr-sub{font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-left:auto}
+
 /* ══════════════════
    GLOBE
 ══════════════════ */
@@ -705,18 +740,37 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
   <div class="W">
     <div data-r style="text-align:center">
       <div style="font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ember);display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:2rem"><span style="width:28px;height:1px;background:var(--ember);display:inline-block"></span>03 — Telemetry</div>
-      <div style="font-family:var(--ff-d);font-size:clamp(3.5rem,8vw,9rem);line-height:.9;letter-spacing:.02em">NETWORK<br><span style="-webkit-text-stroke:1px rgba(255,255,255,.08);-webkit-text-fill-color:transparent"> INTEL</span></div>
-      <p style="color:var(--mist);max-width:480px;margin:1.5rem auto 0;font-size:.9rem;line-height:2">Real-time reconnaissance of your active connection — demonstrating the techniques used in live security assessments.</p>
+      <div class="intel-glitch-title" style="font-family:var(--ff-d);font-size:clamp(3.5rem,8vw,9rem);line-height:.9;letter-spacing:.02em" data-text="NETWORK">NETWORK<br><span style="-webkit-text-stroke:1px rgba(255,255,255,.08);-webkit-text-fill-color:transparent"> INTEL</span></div>
+      <p style="color:var(--mist);max-width:520px;margin:1.5rem auto 0;font-size:.9rem;line-height:2">You opened this page. <span style="color:var(--ember)">We already know more about you than you think.</span> This is a live demonstration of passive reconnaissance — no hacking required.</p>
     </div>
+
+    <!-- CREEP BANNER — shown after data loads -->
+    <div class="creep-banner" id="creep-banner" aria-live="polite">
+      <span class="creep-icon">⚠</span>
+      <span id="creep-msg">Scanning your connection…</span>
+    </div>
+
     <div class="intel-layout">
       <div data-r data-rd="1">
-        <p>Every assessment begins here — mapping your digital footprint before a single exploit is staged. This is what attackers see before you know they're watching.</p>
-        <div class="intel-facts">
-          <div class="if"><div class="if-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><span class="if-lbl">HQ Location</span><div class="if-val">Rajshahi Division, Bangladesh</div></div></div>
-          <div class="if"><div class="if-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><span class="if-lbl">Availability</span><div class="if-val">24 / 7 Incident Support</div></div></div>
-          <div class="if"><div class="if-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><span class="if-lbl">Encryption</span><div class="if-val">E2E · TLS 1.3 · AES-256</div></div></div>
+        <p style="color:var(--mist);font-size:.9rem;line-height:2;margin-bottom:2rem">Before a single exploit is staged, an attacker already knows your city, your ISP, your device, your browser, and your local time. <span style="color:rgba(255,255,255,.7)">They've been watching for minutes before you notice anything is wrong.</span></p>
+
+        <!-- THREAT VERDICT CARD -->
+        <div class="threat-verdict" id="threat-verdict">
+          <div class="tv-header">
+            <span class="tv-label">PASSIVE RECON VERDICT</span>
+            <span class="tv-badge" id="tv-badge">SCANNING…</span>
+          </div>
+          <div class="tv-findings" id="tv-findings">
+            <div class="tv-row"><span class="tv-k">Attack Surface</span><span class="tv-v" id="tv-surface">—</span></div>
+            <div class="tv-row"><span class="tv-k">Identity Exposure</span><span class="tv-v" id="tv-identity">—</span></div>
+            <div class="tv-row"><span class="tv-k">Network Traceability</span><span class="tv-v" id="tv-trace">—</span></div>
+            <div class="tv-row"><span class="tv-k">Device Fingerprint</span><span class="tv-v" id="tv-finger">—</span></div>
+            <div class="tv-row"><span class="tv-k">Geo Precision</span><span class="tv-v" id="tv-geo">—</span></div>
+          </div>
+          <div class="tv-footer">// This is what attackers collect before they attack you.</div>
         </div>
-        <div class="wave-wrap">
+
+        <div class="wave-wrap" style="margin-top:2rem">
           <div class="wave-hdr"><span class="wave-hdr-l">Live Threat Activity</span><span class="wave-hdr-r"><span class="w-blink"></span>Real-time Feed</span></div>
           <canvas id="wave-cv" aria-hidden="true"></canvas>
         </div>
@@ -761,11 +815,24 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
             <div class="tr"><span class="tr-k">Session ID</span><span class="tr-v sid" id="i-sid">Generating...</span></div>
             <div class="tr"><span class="tr-k">Local Time</span><span class="tr-v" id="i-time">—</span></div>
             <div class="tr"><span class="tr-k">Page Load</span><span class="tr-v" id="i-load">—</span></div>
+            <div class="tty2-cat"><div class="tty2-cat-l">Fingerprint Analysis</div></div>
+            <div class="tr"><span class="tr-k">Canvas Hash</span><span class="tr-v" id="i-canvas">Computing…</span></div>
+            <div class="tr"><span class="tr-k">Font Probe</span><span class="tr-v" id="i-fonts">Probing…</span></div>
+            <div class="tr"><span class="tr-k">Entropy Score</span><span class="tr-v hi" id="i-entropy">—</span></div>
+            <div class="tr"><span class="tr-k">Uniqueness Est.</span><span class="tr-v wn" id="i-unique">—</span></div>
           </div>
         </div>
         <div class="tty2-threat">
           <div class="tty2-tl">Exposure Risk Level <span id="t-pct">0%</span></div>
           <div class="tbar"><div class="tbar-f" id="t-fill"></div></div>
+        </div>
+        <!-- PROFILED REVEAL -->
+        <div class="profiled-reveal" id="profiled-reveal">
+          <div class="pr-inner">
+            <div class="pr-icon">◈</div>
+            <div class="pr-line" id="pr-line">SUBJECT PROFILED</div>
+            <div class="pr-sub">Passive collection complete. No interaction required.</div>
+          </div>
         </div>
         <div class="tty2-foot"><span>RH²-SYS RECON ENGINE v5.0 · PASSIVE · ENCRYPTED</span><span id="tty-ts">—</span></div>
       </div>
@@ -1215,7 +1282,7 @@ document.addEventListener('rh2-ready',()=>{
 /* ── TELEMETRY ENGINE ── */
 (function(){
   let done=0;
-  const TOTAL_FIELDS=16;
+  const TOTAL_FIELDS=20;
   function sv(id,val,cls){
     const el=document.getElementById(id);if(!el)return;
     el.textContent=val||'—';el.classList.remove('ld');el.classList.add('ldd');
@@ -1224,10 +1291,13 @@ document.addEventListener('rh2-ready',()=>{
     const pct=Math.min(Math.round(done/TOTAL_FIELDS*100),100);
     const f=document.getElementById('t-fill');const l=document.getElementById('t-pct');
     if(f)f.style.width=pct+'%';if(l)l.textContent=pct+'%';
+    if(pct>=90)showProfiled();
   }
+
   // Session
   const h=()=>Math.floor(Math.random()*65536).toString(16).toUpperCase().padStart(4,'0');
   sv('i-sid','RHX-'+h()+'-'+h(),'sid');
+
   // Browser
   const ua=navigator.userAgent;let br='Unknown',bv='';
   let _m;
@@ -1236,6 +1306,7 @@ document.addEventListener('rh2-ready',()=>{
   else if((_m=ua.match(/Chrome\/([\d.]+)/i))){br='Chrome';bv=_m[1];}
   else if((_m=ua.match(/Safari\/([\d.]+)/i))){br='Safari';bv=_m[1];}
   sv('i-br',bv?br+' v'+bv.split('.')[0]:br);
+
   // OS
   let os='Unknown';
   if(/Windows NT 10/i.test(ua))os='Windows 10/11';else if(/Android ([\d.]+)/i.test(ua))os='Android '+(ua.match(/Android ([\d.]+)/)||[])[1];else if(/iPhone OS ([\d_]+)/i.test(ua))os='iOS '+((ua.match(/iPhone OS ([\d_]+)/i)||[])[1]||'').replace(/_/g,'.');else if(/Mac OS X/i.test(ua))os='macOS';else if(/Linux/i.test(ua))os='Linux';
@@ -1250,13 +1321,65 @@ document.addEventListener('rh2-ready',()=>{
   else{sv('i-conn','Unavailable');sv('i-rtt','—');}
   try{const c=document.createElement('canvas');const glx=c.getContext('webgl2')||c.getContext('webgl');if(glx){const d=glx.getExtension('WEBGL_debug_renderer_info');if(d){const v=glx.getParameter(d.UNMASKED_VENDOR_WEBGL)||'Unknown';const r=glx.getParameter(d.UNMASKED_RENDERER_WEBGL)||'Unknown';sv('i-gpuv',v.length>28?v.slice(0,28)+'…':v);sv('i-gpur',r.length>26?r.slice(0,26)+'…':r);}else{sv('i-gpuv','Masked');sv('i-gpur','Masked');}}else{sv('i-gpuv','Unavailable');sv('i-gpur','—');}
   }catch(e){sv('i-gpuv','Error');sv('i-gpur','—');}
+
   // Clock
   function upd(){const n=new Date();const s=v=>String(v).padStart(2,'0');const val=n.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+s(n.getHours())+':'+s(n.getMinutes())+':'+s(n.getSeconds());const el=document.getElementById('i-time');if(el){el.textContent=val;el.classList.remove('ld');}}
   upd();setInterval(upd,1000);
   function reportPerf(){try{const nav=performance.getEntriesByType('navigation')[0];if(nav){const load=Math.round(nav.loadEventEnd-nav.startTime);sv('i-load',load>0?load+' ms':'<1 ms',load<2000?'ok':'wn');}else sv('i-load',Math.round(performance.now())+' ms');}catch(e){sv('i-load','—');}}
   if(document.readyState==='complete')reportPerf();else window.addEventListener('load',()=>setTimeout(reportPerf,300));
   const ts=document.getElementById('tty-ts');if(ts)ts.textContent=new Date().toISOString().replace('T',' ').split('.')[0]+' UTC';
-  // IP APIs
+
+  // ── CANVAS FINGERPRINT ──
+  setTimeout(()=>{
+    try{
+      const c=document.createElement('canvas');c.width=220;c.height=30;
+      const cx=c.getContext('2d');
+      cx.textBaseline='top';cx.font='13px Arial';cx.fillStyle='rgba(255,100,0,.8)';
+      cx.fillText('RH2-RECON-FP-TEST 🔐',2,2);
+      cx.fillStyle='rgba(0,200,255,.6)';cx.font='11px monospace';
+      cx.fillText('finger_print_probe_2026',2,17);
+      const raw=c.toDataURL();
+      // short hash from data URL
+      let hash=0;for(let i=0;i<raw.length;i++){hash=(hash<<5)-hash+raw.charCodeAt(i);hash|=0;}
+      const hex=Math.abs(hash).toString(16).toUpperCase().padStart(8,'0');
+      sv('i-canvas',hex.slice(0,4)+'-'+hex.slice(4),'hi');
+    }catch(e){sv('i-canvas','Blocked');}
+  },300);
+
+  // ── FONT PROBE ──
+  setTimeout(()=>{
+    try{
+      const testFonts=['Arial','Georgia','Times New Roman','Courier New','Verdana','Impact','Comic Sans MS','Trebuchet MS','Palatino','Garamond'];
+      const ref=document.createElement('span');ref.style.cssText='position:absolute;visibility:hidden;font-size:72px;font-family:monospace';ref.textContent='mmmmmmmmmmlli';document.body.appendChild(ref);
+      const baseW=ref.offsetWidth;let detected=0;
+      testFonts.forEach(f=>{ref.style.fontFamily=f+',monospace';if(ref.offsetWidth!==baseW)detected++;});
+      document.body.removeChild(ref);
+      sv('i-fonts',detected+'/'+testFonts.length+' detected','wn');
+    }catch(e){sv('i-fonts','Unavailable');}
+  },500);
+
+  // ── ENTROPY & UNIQUENESS ──
+  setTimeout(()=>{
+    const factors=[
+      navigator.hardwareConcurrency>0,
+      navigator.deviceMemory>0,
+      screen.width>0,
+      window.devicePixelRatio!==1,
+      !!navigator.connection,
+      !!(window.AudioContext||window.webkitAudioContext),
+      'ontouchstart' in window,
+      navigator.maxTouchPoints>0,
+    ];
+    const bits=factors.filter(Boolean).length;
+    const entropyBits=Math.round(8+bits*1.8);
+    sv('i-entropy',entropyBits+' bits','hi');
+    // Rough uniqueness estimate: 2^entropyBits browsers share this print
+    const pool=Math.round(Math.pow(2,entropyBits));
+    const label=pool>500000?'~1 in '+Math.round(pool/1000)+'K browsers':'~1 in '+pool+' browsers';
+    sv('i-unique',label,'wn');
+  },700);
+
+  // ── IP APIs ──
   const APIS=[
     {url:'https://ipapi.co/json/',ok:d=>d&&!d.error&&d.ip,parse:d=>({ip:d.ip,country:(d.country_name||'')+(d.country_code?' ('+d.country_code+')':''),city:(d.city||'—')+', '+(d.region||'—'),isp:d.org||'—',tz:d.timezone||'—'})},
     {url:'https://ipwho.is/',ok:d=>d&&d.success&&d.ip,parse:d=>({ip:d.ip,country:(d.country||'')+(d.country_code?' ('+d.country_code+')':''),city:(d.city||'—')+', '+(d.region||'—'),isp:(d.connection&&(d.connection.isp||d.connection.org))||'—',tz:(d.timezone&&d.timezone.id)||'—'})},
@@ -1279,8 +1402,63 @@ document.addEventListener('rh2-ready',()=>{
     });
     if(!filled.ip)sv('i-ip','Unavailable');if(!filled.country)sv('i-country','Unavailable');if(!filled.city)sv('i-city','Unavailable');if(!filled.isp)sv('i-isp','Unavailable');if(!filled.tz)sv('i-tz','Unavailable');
     const stat=document.getElementById('sc-stat');if(stat){stat.textContent=filled.ip&&filled.country?'COMPLETE':'PARTIAL';stat.style.color=filled.ip&&filled.country?'#28c840':'#ffaa00';}
+
+    // ── BUILD THREAT VERDICT ──
+    buildVerdict(filled);
   }
   tryApis();
+
+  // ── THREAT VERDICT BUILDER ──
+  function buildVerdict(filled){
+    const badge=document.getElementById('tv-badge');
+    const hasIp=filled.ip,hasGeo=filled.city,hasIsp=filled.isp;
+
+    // Attack surface: based on device type
+    const dv2=document.getElementById('i-dev');
+    const devTxt=dv2?dv2.textContent:'';
+    const surf=devTxt.includes('Mobile')?'Mobile · Web exposed':'Web + Network exposed';
+    setVerdictField('tv-surface',surf,devTxt.includes('Mobile')?'partial':'exposed');
+
+    // Identity exposure
+    const identityLevel=hasIp&&hasGeo?'High — IP + City resolved':'Partial';
+    setVerdictField('tv-identity',identityLevel,hasIp&&hasGeo?'exposed':'partial');
+
+    // Tracability
+    const traceLevel=hasIsp?'ISP + ASN identified':'Limited';
+    setVerdictField('tv-trace',traceLevel,hasIsp?'exposed':'partial');
+
+    // Device fingerprint
+    setVerdictField('tv-finger','Canvas + Font + GPU probed','exposed');
+
+    // Geo precision
+    const geoEl=document.getElementById('i-city');
+    const geoVal=geoEl&&geoEl.textContent&&geoEl.textContent!=='—'?geoEl.textContent:'Unknown';
+    const geoLabel=geoVal!=='Unknown'?'City-level · '+geoVal.split(',')[0]:'Region-level only';
+    setVerdictField('tv-geo',geoLabel,geoVal!=='Unknown'?'exposed':'partial');
+
+    // Badge
+    if(badge){badge.textContent='HIGH EXPOSURE';badge.classList.add('danger');}
+
+    // Creep banner update
+    const banner=document.getElementById('creep-msg');
+    const city=document.getElementById('i-city');
+    const cityTxt=city&&city.textContent&&city.textContent!=='—'?city.textContent.split(',')[0]:'your location';
+    if(banner){
+      banner.textContent='We know you\'re in '+cityTxt+'. So does every threat actor who visits your server.';
+    }
+  }
+
+  function setVerdictField(id,val,cls){
+    const el=document.getElementById(id);if(!el)return;
+    el.textContent=val;el.className='tv-v '+cls;
+  }
+
+  function showProfiled(){
+    const pr=document.getElementById('profiled-reveal');
+    if(pr&&!pr.classList.contains('show')){
+      setTimeout(()=>{pr.classList.add('show');},1200);
+    }
+  }
 })();
 
 /* ── 3D GLOBE ── */
