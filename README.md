@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1582,3 +1581,4 @@ document.getElementById('cform').addEventListener('submit',async e=>{
 </script>
 </body>
 </html>
+
