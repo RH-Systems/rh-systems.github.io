@@ -1516,7 +1516,7 @@ document.addEventListener('rh2-ready',()=>{
     const el=document.createElement('div');el.className='cmsg '+role;
     if(role==='bot'){
       msgs.appendChild(el);
-      let i=0;const speed=3;
+      let i=0;const speed=0.5;
       function typeNext(){
         if(i<=text.length){
           el.innerHTML='';
@@ -1616,4 +1616,5 @@ document.getElementById('cform').addEventListener('submit',async e=>{
 </script>
 </body>
 </html>
+
 
