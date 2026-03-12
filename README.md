@@ -411,11 +411,11 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 /* ══════════════════
    CHAT
 ══════════════════ */
-#chat-btn{position:fixed;bottom:32px;right:32px;z-index:500;width:52px;height:52px;border-radius:50%;background:var(--ember);color:var(--void);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:chat-p 2.5s ease infinite;transition:transform .3s;cursor:none;border:none}
+#chat-btn{position:fixed;bottom:32px;right:32px;isolation:isolate;z-index:500;width:52px;height:52px;border-radius:50%;background:var(--ember);color:var(--void);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:chat-p 2.5s ease infinite;transition:transform .3s;cursor:none;border:none}
 @keyframes cur-blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes chat-p{0%,100%{box-shadow:0 0 0 0 rgba(255,45,0,.4)}50%{box-shadow:0 0 0 14px rgba(255,45,0,0)}}
 #chat-btn:hover{transform:scale(1.1)}
 #chat-btn.open{animation:none;background:#111}
-#chat-box{position:fixed;bottom:100px;right:24px;z-index:9000;width:360px;max-width:calc(100vw - 32px);background:rgba(4,4,10,.98);backdrop-filter:blur(40px);border:1px solid rgba(255,45,0,.18);box-shadow:0 40px 80px rgba(0,0,0,.8);opacity:0;pointer-events:none;transform:translateY(20px) scale(.96);transition:opacity .3s,transform .3s;display:flex;flex-direction:column}
+#chat-box{position:fixed;bottom:100px;right:24px;z-index:9000;isolation:isolate;width:360px;max-width:calc(100vw - 32px);background:rgba(4,4,10,.98);backdrop-filter:blur(40px);border:1px solid rgba(255,45,0,.18);box-shadow:0 40px 80px rgba(0,0,0,.8);opacity:0;pointer-events:none;transform:translateY(20px) scale(.96);transition:opacity .3s,transform .3s;display:flex;flex-direction:column}
 #chat-box.on{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
 .ch-hdr{padding:16px 18px;border-bottom:1px solid var(--b0);display:flex;align-items:center;gap:12px;background:rgba(255,45,0,.04)}
 .ch-av{width:30px;height:30px;border-radius:50%;background:var(--ember);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
@@ -955,7 +955,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
   gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, FS));
   // CORRECT ORDER: link → check → use → get locations
   gl.linkProgram(prog);
-  if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){console.warn('RH² shader link failed:',gl.getProgramInfoLog(prog));return;}
+  if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){return;}
   gl.useProgram(prog);
 
   const buf = gl.createBuffer();
@@ -1050,13 +1050,13 @@ window.addEventListener('scroll',()=>{
   _hdr.style.borderBottomColor=window.scrollY>10?'rgba(255,255,255,.06)':'rgba(255,255,255,.02)';
   if(_stt)_stt.classList.toggle('on',window.scrollY>500);
 },{passive:true});
-document.getElementById('stt').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+if(_stt)_stt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
 /* ── MOBILE NAV ── */
 const hburg=document.getElementById('h-burg');
 const mnav=document.getElementById('mob-nav');
-function closeMobileNav(){mnav.classList.remove('on');hburg.setAttribute('aria-expanded','false');document.body.style.overflow='';}
-hburg.addEventListener('click',()=>{
+function closeMobileNav(){if(mnav)mnav.classList.remove('on');if(hburg)hburg.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+if(hburg)hburg.addEventListener('click',()=>{
   const on=mnav.classList.toggle('on');
   hburg.setAttribute('aria-expanded',on);
   document.body.style.overflow=on?'hidden':'';
@@ -1100,7 +1100,7 @@ document.addEventListener('rh2-ready',()=>{
 
 /* ── UTC CLOCK ── */
 (function(){
-  function upd(){const t=new Date();const z=v=>String(v).padStart(2,'0');document.getElementById('utc').textContent=z(t.getUTCHours())+':'+z(t.getUTCMinutes())+':'+z(t.getUTCSeconds())+' UTC';}
+  function upd(){const t=new Date();const z=v=>String(v).padStart(2,'0');const utcEl=document.getElementById('utc');if(!utcEl)return;utcEl.textContent=z(t.getUTCHours())+':'+z(t.getUTCMinutes())+':'+z(t.getUTCSeconds())+' UTC';}
   upd();setInterval(upd,1000);
 })();
 
@@ -1108,6 +1108,7 @@ document.addEventListener('rh2-ready',()=>{
 (function(){
   const words=['ENGINEERED.','UNBREAKABLE.','ADVERSARIAL.','RELENTLESS.'];
   const el=document.getElementById('type-el');
+  if(!el)return;
   let wi=0,ci=0,del=false;
   (function tick(){const w=words[wi];el.textContent=del?w.substring(0,--ci):w.substring(0,++ci);let d=del?22:65;if(!del&&ci===w.length){d=2200;del=true;}if(del&&ci===0){del=false;wi=(wi+1)%words.length;}setTimeout(tick,d);})();
 })();
@@ -1384,6 +1385,7 @@ document.addEventListener('rh2-ready',()=>{
     catch(e){clearTimeout(timer);throw e;}
   }
   async function tryApis(){
+    try{
     const results=await Promise.allSettled(APIS.map(a=>fetchApi(a)));
     results.forEach(res=>{if(res.status!=='fulfilled')return;const p=res.value;
       if(!filled.ip&&p.ip){sv('i-ip',p.ip,'hi');filled.ip=true;}
@@ -1397,6 +1399,7 @@ document.addEventListener('rh2-ready',()=>{
 
     // ── BUILD THREAT VERDICT ──
     buildVerdict(filled);
+    }catch(e){}
   }
   tryApis();
 
@@ -1571,15 +1574,11 @@ Rules:
       });
       if(!res.ok){const err=await res.text();throw new Error('API '+res.status+': '+err.slice(0,120));}
       const data=await res.json();
-      const rawStr=JSON.stringify(data).slice(0,300);
-      console.log('RAW GEMINI RESPONSE:', rawStr);
-      const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text
-        || (data?.error ? 'GEMINI ERROR: '+data.error.message+' | code:'+data.error.code : 'RAW:'+rawStr);
+      const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||'Connection issue. Please try again or use our secure contact form.';
       chatHistory.push({role:'model',parts:[{text:reply}]});
       typing.remove();addMsg(reply,'bot');
     }catch(e){
-      console.error('CHAT ERROR:',e.message,e);
-      typing.remove();addMsg('FETCH ERROR: '+e.message+' | type:'+e.name,'bot');
+      typing.remove();addMsg('Connection issue. Please try again or use our secure contact form.','bot');
       chatHistory.pop();
     }
     send.disabled=false;inp.disabled=false;inp.focus();
@@ -1603,7 +1602,7 @@ const db=getFirestore(app);
 const ov=document.getElementById('sov2');
 const closeSov=document.getElementById('close-sov');if(closeSov)closeSov.addEventListener('click',()=>ov.classList.remove('on'));
 ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('on');});
-document.getElementById('cform').addEventListener('submit',async e=>{
+const cformEl=document.getElementById('cform');if(cformEl)cformEl.addEventListener('submit',async e=>{
   e.preventDefault();
   const name=document.getElementById('fn').value.trim();
   const email=document.getElementById('fe').value.trim();
@@ -1618,7 +1617,7 @@ document.getElementById('cform').addEventListener('submit',async e=>{
     const safeEmail=email.slice(0,254);
     const safeMsg=message.slice(0,2000);
     await addDoc(collection(db,'messages'),{name:safeName,email:safeEmail,message:safeMsg,timestamp:new Date(),source:'rh2-systems.com'});
-    const cf=document.getElementById('cform');if(cf)cf.reset();ov.classList.add('on');}
+    if(cformEl)cformEl.reset();ov.classList.add('on');}
   catch(err){alert('Error: '+err.message);}
   finally{btn.querySelector('span').textContent='TRANSMIT ENCRYPTED REQUEST';btn.disabled=false;}
 });
