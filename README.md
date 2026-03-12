@@ -525,7 +525,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 
 <!-- CHAT -->
 <div id="chat-box" role="dialog" aria-label="RH² Security AI">
-  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · OFFLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
+  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · ONLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
   <div class="ch-msgs" id="ch-msgs">
     <div class="cmsg bot">Hello, Operator. I'm RH²-AI — your encrypted security intelligence assistant. How can I help?</div>
     <div class="ch-sugg" id="ch-sugg"><button class="csb">Red Teaming?</button><button class="csb">PenTesting?</button><button class="csb">Pricing?</button><button class="csb">Meet the team</button></div>
@@ -1616,5 +1616,6 @@ document.getElementById('cform').addEventListener('submit',async e=>{
 </script>
 </body>
 </html>
+
 
 
