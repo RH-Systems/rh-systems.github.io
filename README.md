@@ -1571,12 +1571,15 @@ Rules:
       });
       if(!res.ok){const err=await res.text();throw new Error('API '+res.status+': '+err.slice(0,120));}
       const data=await res.json();
-      const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text||'Connection issue. Please try again or use our secure contact form.';
+      const rawStr=JSON.stringify(data).slice(0,300);
+      console.log('RAW GEMINI RESPONSE:', rawStr);
+      const reply=data?.candidates?.[0]?.content?.parts?.[0]?.text
+        || (data?.error ? 'GEMINI ERROR: '+data.error.message+' | code:'+data.error.code : 'RAW:'+rawStr);
       chatHistory.push({role:'model',parts:[{text:reply}]});
       typing.remove();addMsg(reply,'bot');
     }catch(e){
-      console.error('AI error full:',e.message, e);
-      typing.remove();addMsg('Error: '+e.message,'bot');
+      console.error('CHAT ERROR:',e.message,e);
+      typing.remove();addMsg('FETCH ERROR: '+e.message+' | type:'+e.name,'bot');
       chatHistory.pop();
     }
     send.disabled=false;inp.disabled=false;inp.focus();
