@@ -1578,7 +1578,7 @@ Rules:
       chatHistory.push({role:'model',parts:[{text:reply}]});
       typing.remove();addMsg(reply,'bot');
     }catch(e){
-      typing.remove();addMsg('Connection issue. Please try again or use our secure contact form.','bot');
+      typing.remove();addMsg('ERROR: '+e.message,'bot');
       chatHistory.pop();
     }
     send.disabled=false;inp.disabled=false;inp.focus();
