@@ -5,19 +5,23 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RH²-Systems | Elite Offensive Security</title>
+<link rel="canonical" href="https://rh-systems.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RH²-Systems | Elite Offensive Security">
+<meta property="og:description" content="Advanced penetration testing, red team operations, and secure engineering for high-risk enterprise infrastructure.">
+<meta property="og:url" content="https://rh-systems.github.io/">
+<meta property="og:image" content="https://rh-systems.github.io/favicon.ico">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RH²-Systems | Elite Offensive Security">
+<meta name="twitter:description" content="Advanced penetration testing, red team operations, and secure engineering.">
 <meta name="theme-color" content="#0b0b0f">
 <meta name="description" content="RH²-Systems — Advanced penetration testing, red team operations, and secure engineering for high-risk enterprise infrastructure.">
-<meta name="theme-color" content="#000000">
-<!-- ═══════════════════════════════════════════
-     RH²-Systems ◈ Favicon Set (embedded)
-     ═══════════════════════════════════════════ -->
-<meta name="theme-color" content="#0b0b0f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
 <style>
 /* ══════════════════════════════════════════════════════════
    RH²-SYSTEMS ◈ WORLD-CLASS DESIGN ENGINE v∞
@@ -527,12 +531,12 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 
 <!-- CHAT -->
 <div id="chat-box" role="dialog" aria-label="RH² Security AI">
-  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · OFFLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
+  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · ONLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
   <div class="ch-msgs" id="ch-msgs">
     <div class="cmsg bot">Hello, Operator. I'm RH²-AI — your encrypted security intelligence assistant. How can I help?</div>
     <div class="ch-sugg" id="ch-sugg"><button class="csb">Red Teaming?</button><button class="csb">PenTesting?</button><button class="csb">Pricing?</button><button class="csb">Meet the team</button></div>
   </div>
-  <div class="ch-foot"><input class="ch-inp" id="ch-inp" placeholder="Ask about security..." maxlength="500" autocomplete="off"><button class="ch-send" id="ch-send">➤</button></div>
+  <div class="ch-foot"><input class="ch-inp" id="ch-inp" placeholder="Ask about security..." maxlength="2000" autocomplete="off"><button class="ch-send" id="ch-send">➤</button></div>
 </div>
 
 <!-- HEADER -->
@@ -1538,8 +1542,8 @@ document.addEventListener('rh2-ready',()=>{
       msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
     }
   }
-  const GEMINI_KEY='AIzaSyAO_vf54IfYPOVAWYnkVDuX1t5_Ubj1cxY';
-  const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key='+GEMINI_KEY;
+  /* API key hidden inside Cloudflare Worker — safe to deploy */
+  const PROXY_URL='https://api.rajhridoy100az.workers.dev';
   const SYSTEM_PROMPT=`You are the AI assistant for RH²-Systems, an elite offensive cybersecurity firm based in Rajshahi Division, Bangladesh. Founded by Raj Hridoy (Cybersecurity Engineer: secure architecture, cloud security, DevSecOps) and Riyad Hasan (Ethical Hacker: penetration testing, network forensics, exploit development, red teaming).
 
 Services: Web/Mobile/API/Cloud/Network Penetration Testing (OWASP Top 10, PTES, NIST), Red Team Operations (APT simulation, full kill chain), Secure Engineering (DevSecOps, Zero Trust, code review, CI/CD hardening).
@@ -1557,7 +1561,7 @@ Rules:
     msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
     chatHistory.push({role:'user',parts:[{text:q}]});
     try{
-      const res=await fetch(GEMINI_URL,{
+      const res=await fetch(PROXY_URL,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -1571,7 +1575,7 @@ Rules:
       chatHistory.push({role:'model',parts:[{text:reply}]});
       typing.remove();addMsg(reply,'bot');
     }catch(e){
-      console.error('Gemini error:',e);
+      /* console.error('AI error:',e); */
       typing.remove();addMsg('Error: '+e.message+' — Try again or use our **secure contact form**.','bot');
       chatHistory.pop();
     }
@@ -1594,7 +1598,7 @@ import{getFirestore,collection,addDoc}from"https://www.gstatic.com/firebasejs/12
 const app=initializeApp({apiKey:"AIzaSyBl4bO6hNumDov3d26YNFj1y7Id498rBTU",authDomain:"rh2-systems.firebaseapp.com",projectId:"rh2-systems",storageBucket:"rh2-systems.firebasestorage.app",messagingSenderId:"492917852953",appId:"1:492917852953:web:9fc6ff86f6fcd2fc965388"});
 const db=getFirestore(app);
 const ov=document.getElementById('sov2');
-document.getElementById('close-sov').addEventListener('click',()=>ov.classList.remove('on'));
+const closeSov=document.getElementById('close-sov');if(closeSov)closeSov.addEventListener('click',()=>ov.classList.remove('on'));
 ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('on');});
 document.getElementById('cform').addEventListener('submit',async e=>{
   e.preventDefault();
@@ -1611,7 +1615,7 @@ document.getElementById('cform').addEventListener('submit',async e=>{
     const safeEmail=email.slice(0,254);
     const safeMsg=message.slice(0,2000);
     await addDoc(collection(db,'messages'),{name:safeName,email:safeEmail,message:safeMsg,timestamp:new Date(),source:'rh2-systems.com'});
-    document.getElementById('cform').reset();ov.classList.add('on');}
+    const cf=document.getElementById('cform');if(cf)cf.reset();ov.classList.add('on');}
   catch(err){alert('Error: '+err.message);}
   finally{btn.querySelector('span').textContent='TRANSMIT ENCRYPTED REQUEST';btn.disabled=false;}
 });
