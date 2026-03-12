@@ -1,6 +1,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RH²-Systems | Elite Offensive Security</title>
 <meta name="theme-color" content="#0b0b0f">
@@ -525,7 +527,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 
 <!-- CHAT -->
 <div id="chat-box" role="dialog" aria-label="RH² Security AI">
-  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · ONLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
+  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · OFFLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
   <div class="ch-msgs" id="ch-msgs">
     <div class="cmsg bot">Hello, Operator. I'm RH²-AI — your encrypted security intelligence assistant. How can I help?</div>
     <div class="ch-sugg" id="ch-sugg"><button class="csb">Red Teaming?</button><button class="csb">PenTesting?</button><button class="csb">Pricing?</button><button class="csb">Meet the team</button></div>
@@ -1516,7 +1518,7 @@ document.addEventListener('rh2-ready',()=>{
     const el=document.createElement('div');el.className='cmsg '+role;
     if(role==='bot'){
       msgs.appendChild(el);
-      let i=0;const speed=0.5;
+      let i=0;const speed=5;
       function typeNext(){
         if(i<=text.length){
           el.innerHTML='';
@@ -1616,6 +1618,3 @@ document.getElementById('cform').addEventListener('submit',async e=>{
 </script>
 </body>
 </html>
-
-
-
