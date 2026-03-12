@@ -406,7 +406,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
    CHAT
 ══════════════════ */
 #chat-btn{position:fixed;bottom:32px;right:32px;z-index:500;width:52px;height:52px;border-radius:50%;background:var(--ember);color:var(--void);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:chat-p 2.5s ease infinite;transition:transform .3s;cursor:none;border:none}
-@keyframes chat-p{0%,100%{box-shadow:0 0 0 0 rgba(255,45,0,.4)}50%{box-shadow:0 0 0 14px rgba(255,45,0,0)}}
+@keyframes cur-blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes chat-p{0%,100%{box-shadow:0 0 0 0 rgba(255,45,0,.4)}50%{box-shadow:0 0 0 14px rgba(255,45,0,0)}}
 #chat-btn:hover{transform:scale(1.1)}
 #chat-btn.open{animation:none;background:#111}
 #chat-box{position:fixed;bottom:100px;right:24px;z-index:9000;width:360px;max-width:calc(100vw - 32px);background:rgba(4,4,10,.98);backdrop-filter:blur(40px);border:1px solid rgba(255,45,0,.18);box-shadow:0 40px 80px rgba(0,0,0,.8);opacity:0;pointer-events:none;transform:translateY(20px) scale(.96);transition:opacity .3s,transform .3s;display:flex;flex-direction:column}
@@ -1504,18 +1504,39 @@ document.addEventListener('rh2-ready',()=>{
   btn.addEventListener('click',()=>{const on=box.classList.toggle('on');btn.classList.toggle('open',on);if(on)setTimeout(()=>inp.focus(),400);});
   if(closeBtn)closeBtn.addEventListener('click',()=>{box.classList.remove('on');btn.classList.remove('open');});
   document.querySelectorAll('.csb').forEach(b=>b.addEventListener('click',()=>{inp.value=b.textContent;submit();}));
-  function addMsg(text,role){
-    const s=document.getElementById('ch-sugg');if(role==='usr'&&s)s.style.display='none';
-    const el=document.createElement('div');el.className='cmsg '+role;
-    // Safe bold rendering: split on **...** and build DOM nodes — no innerHTML with user data
+  function renderText(el,text){
     const parts=text.split(/\*\*(.*?)\*\*/g);
     parts.forEach((part,i)=>{
       if(i%2===1){const b=document.createElement('strong');b.textContent=part;el.appendChild(b);}
       else{part.split('\n').forEach((line,li,arr)=>{el.appendChild(document.createTextNode(line));if(li<arr.length-1)el.appendChild(document.createElement('br'));});}
     });
-    msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
   }
-  const GEMINI_KEY='AIzaSyCJpEjzJDuO__T2wijUtOLy2w-kamgSL5U';
+  function addMsg(text,role){
+    const s=document.getElementById('ch-sugg');if(role==='usr'&&s)s.style.display='none';
+    const el=document.createElement('div');el.className='cmsg '+role;
+    if(role==='bot'){
+      msgs.appendChild(el);
+      let i=0;const speed=18;
+      function typeNext(){
+        if(i<=text.length){
+          el.innerHTML='';
+          renderText(el,text.slice(0,i));
+          // add blinking cursor while typing
+          const cur=document.createElement('span');cur.style.cssText='display:inline-block;width:2px;height:1em;background:var(--ember);margin-left:2px;vertical-align:text-bottom;animation:cur-blink .6s step-end infinite';
+          el.appendChild(cur);
+          msgs.scrollTop=msgs.scrollHeight;
+          i++;setTimeout(typeNext,speed);
+        }else{
+          el.innerHTML='';renderText(el,text);msgs.scrollTop=msgs.scrollHeight;
+        }
+      }
+      typeNext();
+    }else{
+      renderText(el,text);
+      msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
+    }
+  }
+  const GEMINI_KEY='AIzaSyAO_vf54IfYPOVAWYnkVDuX1t5_Ubj1cxY';
   const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key='+GEMINI_KEY;
   const SYSTEM_PROMPT=`You are the AI assistant for RH²-Systems, an elite offensive cybersecurity firm based in Rajshahi Division, Bangladesh. Founded by Raj Hridoy (Cybersecurity Engineer: secure architecture, cloud security, DevSecOps) and Riyad Hasan (Ethical Hacker: penetration testing, network forensics, exploit development, red teaming).
 
@@ -1595,4 +1616,3 @@ document.getElementById('cform').addEventListener('submit',async e=>{
 </script>
 </body>
 </html>
-
