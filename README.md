@@ -1515,7 +1515,7 @@ document.addEventListener('rh2-ready',()=>{
     });
     msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
   }
-  const GEMINI_KEY='AIzaSyClQxgEMFvfDzyp1qKzdcGEpUc7kGy5sZc';
+  const GEMINI_KEY='AIzaSyCJpEjzJDuO__T2wijUtOLy2w-kamgSL5U';
   const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key='+GEMINI_KEY;
   const SYSTEM_PROMPT=`You are the AI assistant for RH²-Systems, an elite offensive cybersecurity firm based in Rajshahi Division, Bangladesh. Founded by Raj Hridoy (Cybersecurity Engineer: secure architecture, cloud security, DevSecOps) and Riyad Hasan (Ethical Hacker: penetration testing, network forensics, exploit development, red teaming).
 
@@ -1595,3 +1595,4 @@ document.getElementById('cform').addEventListener('submit',async e=>{
 </script>
 </body>
 </html>
+
