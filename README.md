@@ -1543,7 +1543,7 @@ document.addEventListener('rh2-ready',()=>{
     }
   }
   /* API key hidden inside Cloudflare Worker — safe to deploy */
-  const PROXY_URL='https://api.rajhridoy100az.workers.dev';
+  const PROXY_URL='https://apihide.rajhridoy100az.workers.dev';
   const SYSTEM_PROMPT=`You are the AI assistant for RH²-Systems, an elite offensive cybersecurity firm based in Rajshahi Division, Bangladesh. Founded by Raj Hridoy (Cybersecurity Engineer: secure architecture, cloud security, DevSecOps) and Riyad Hasan (Ethical Hacker: penetration testing, network forensics, exploit development, red teaming).
 
 Services: Web/Mobile/API/Cloud/Network Penetration Testing (OWASP Top 10, PTES, NIST), Red Team Operations (APT simulation, full kill chain), Secure Engineering (DevSecOps, Zero Trust, code review, CI/CD hardening).
