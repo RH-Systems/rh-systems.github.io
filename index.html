@@ -96,7 +96,10 @@ nav{height:100%;display:flex;align-items:center;justify-content:space-between}
 .nav-cta:hover::before{transform:translateX(0)}
 .nav-cta::after{display:none!important}
 .h-burg{display:none;flex-direction:column;gap:5px;padding:6px}
-.h-burg span{display:block;width:24px;height:1.5px;background:var(--white);transition:.3s}
+.h-burg span{display:block;width:24px;height:1.5px;background:var(--white);transition:transform .3s,opacity .3s}
+.h-burg.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.h-burg.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.h-burg.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 .mob-nav{visibility:hidden;position:fixed;inset:0;top:70px;z-index:999;background:rgba(0,0,0,.98);backdrop-filter:blur(40px);flex-direction:column;align-items:center;justify-content:center;gap:44px;opacity:0;pointer-events:none;transition:opacity .3s,visibility .3s;display:flex}
 .mob-nav.on{visibility:visible;opacity:1;pointer-events:all}
 .mob-nav a{font-family:var(--ff-d);font-size:3.5rem;letter-spacing:.1em;color:var(--white);transition:color .2s}
@@ -373,7 +376,7 @@ nav{height:100%;display:flex;align-items:center;justify-content:space-between}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .fi2{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
 .fi2 label{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
-.fi2 input,.fi2 textarea{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:14px 18px;color:var(--white);font-family:var(--ff-m);font-size:.9rem;width:100%;-webkit-appearance:none;caret-color:var(--ember);transition:border-color .3s,box-shadow .3s}
+.fi2 input,.fi2 textarea{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:14px 18px;color:var(--white);font-family:var(--ff-m);font-size:.9rem;width:100%;-webkit-appearance:none;caret-color:var(--ember);transition:border-color .3s,box-shadow .3s}
 .fi2 input:focus,.fi2 textarea:focus{outline:none;border-color:rgba(255,45,0,.3);box-shadow:0 0 0 3px rgba(255,45,0,.05)}
 .fi2 textarea{resize:vertical;min-height:150px}
 .fsub2{width:100%;padding:20px;background:var(--ember);color:var(--void);font-family:var(--ff-m);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;position:relative;overflow:hidden;transition:transform .4s var(--ease-out),box-shadow .4s}
@@ -405,45 +408,220 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 .ft-col a{font-size:.86rem;color:var(--mist);transition:color .25s,padding-left .25s}
 .ft-col a:hover{color:var(--ember);padding-left:8px}
 .ft-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.ft-copy{font-size:.58rem;letter-spacing:.1em;color:rgba(58,56,64,.7)}
+.ft-copy{font-size:.58rem;letter-spacing:.1em;color:rgba(168,164,158,.4)}
 .ft-r{font-size:.58rem;color:var(--dim)}
 .ft-r span{color:var(--ember)}
 
 /* ══════════════════
-   CHAT
+   CHAT — ULTRA PRO
 ══════════════════ */
-#chat-btn{position:fixed;bottom:32px;right:32px;isolation:isolate;z-index:500;width:52px;height:52px;border-radius:50%;background:var(--ember);color:var(--void);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:chat-p 2.5s ease infinite;transition:transform .3s;cursor:none;border:none}
-@keyframes cur-blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes chat-p{0%,100%{box-shadow:0 0 0 0 rgba(255,45,0,.4)}50%{box-shadow:0 0 0 14px rgba(255,45,0,0)}}
-#chat-btn:hover{transform:scale(1.1)}
-#chat-btn.open{animation:none;background:#111}
-#chat-box{position:fixed;bottom:100px;right:24px;z-index:9000;isolation:isolate;width:360px;max-width:calc(100vw - 32px);background:rgba(4,4,10,.98);backdrop-filter:blur(40px);border:1px solid rgba(255,45,0,.18);border-radius:16px;box-shadow:0 40px 80px rgba(0,0,0,.8);opacity:0;pointer-events:none;transform:translateY(20px) scale(.96);transition:opacity .3s,transform .3s;display:flex;flex-direction:column}
+/* Launcher */
+#chat-btn{
+  position:fixed;bottom:32px;right:32px;isolation:isolate;z-index:9500;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--ember),var(--ember2));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  border:none;cursor:none;
+  box-shadow:0 0 0 0 rgba(255,45,0,.5),0 8px 32px rgba(255,45,0,.3);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+  animation:chat-pulse 3s ease infinite;
+}
+@keyframes chat-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,45,0,.4),0 8px 32px rgba(255,45,0,.25)}
+  50%{box-shadow:0 0 0 16px rgba(255,45,0,0),0 8px 32px rgba(255,45,0,.25)}
+}
+#chat-btn:hover{transform:scale(1.12);box-shadow:0 0 0 0 rgba(255,45,0,0),0 16px 48px rgba(255,45,0,.5)}
+#chat-btn.open{animation:none;background:rgba(10,10,20,.95);box-shadow:0 8px 32px rgba(0,0,0,.6)}
+#chat-btn svg{transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s}
+#chat-btn .ico-chat{position:absolute}
+#chat-btn .ico-close{position:absolute;opacity:0;transform:rotate(-90deg) scale(.5)}
+#chat-btn.open .ico-chat{opacity:0;transform:rotate(90deg) scale(.5)}
+#chat-btn.open .ico-close{opacity:1;transform:rotate(0deg) scale(1)}
+
+/* Window */
+#chat-box{
+  position:fixed;bottom:104px;right:24px;z-index:9400;
+  width:400px;max-width:calc(100vw - 32px);
+  background:rgba(6,6,14,.97);
+  backdrop-filter:blur(60px);-webkit-backdrop-filter:blur(60px);
+  border:1px solid rgba(255,45,0,.15);
+  border-radius:20px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.04),0 50px 100px rgba(0,0,0,.9),0 0 80px rgba(255,45,0,.05);
+  display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;pointer-events:none;
+  transform:translateY(24px) scale(.93);
+  transform-origin:bottom right;
+  transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.34,1.56,.64,1);
+}
 #chat-box.on{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
-.ch-hdr{padding:16px 18px;border-bottom:1px solid var(--b0);display:flex;align-items:center;gap:12px;background:rgba(255,45,0,.04)}
-.ch-av{width:30px;height:30px;border-radius:50%;background:var(--ember);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
-.ch-info h4{font-family:var(--ff-d);font-size:.95rem;letter-spacing:.06em}
-.ch-info p{font-size:.56rem;color:var(--ember);letter-spacing:.1em}
-.ch-close{margin-left:auto;color:var(--mist);font-size:1.1rem;cursor:none;background:none;border:none;transition:color .2s}
-.ch-close:hover{color:var(--white)}
-.ch-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:220px;max-height:300px;scrollbar-width:thin;scrollbar-color:rgba(255,45,0,.2) transparent}
-.cmsg{max-width:90%;padding:10px 13px;font-size:.82rem;line-height:1.6;animation:mIn .3s var(--ease-out)}
-@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.cmsg.bot{background:rgba(255,255,255,.04);border:1px solid var(--b0);align-self:flex-start}
-.cmsg.usr{background:rgba(255,45,0,.12);border:1px solid rgba(255,45,0,.18);align-self:flex-end}
-.ch-sugg{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0}
-.csb{font-size:.58rem;letter-spacing:.06em;padding:5px 10px;border:1px solid var(--b0);color:var(--mist);cursor:none;transition:color .2s,border-color .2s;background:none;font-family:var(--ff-m)}
-.csb:hover{color:var(--ember);border-color:rgba(255,45,0,.4)}
-.ch-foot{padding:10px 14px;border-top:1px solid var(--b0);display:flex;gap:8px}
-.ch-inp{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--b0);padding:9px 12px;color:var(--white);font-family:var(--ff-m);font-size:.82rem;outline:none;caret-color:var(--ember);transition:border-color .25s}
-.ch-inp:focus{border-color:rgba(255,45,0,.3)}
-.ch-inp::placeholder{color:var(--dim)}
-.ch-send{width:34px;height:34px;background:var(--ember);color:var(--void);border:none;cursor:none;display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:transform .2s}
-.ch-send:hover{transform:scale(1.08)}
-.ch-send:disabled{opacity:.4}
-.ch-typing{display:flex;align-items:center;gap:4px;padding:10px 13px;align-self:flex-start}
-.ch-typing span{width:5px;height:5px;border-radius:50%;background:var(--ember);opacity:.3;animation:tdot 1.2s ease infinite}
-.ch-typing span:nth-child(2){animation-delay:.2s}
-.ch-typing span:nth-child(3){animation-delay:.4s}
-@keyframes tdot{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1.2)}}
+
+/* Animated top border glow */
+#chat-box::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,45,0,.8),var(--ember2),rgba(255,45,0,.8),transparent);
+  box-shadow:0 0 20px rgba(255,45,0,.5);
+  z-index:1;
+}
+
+/* Header */
+.ch-hdr{
+  padding:18px 20px;
+  background:linear-gradient(135deg,rgba(255,45,0,.06),rgba(255,101,0,.03));
+  border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;gap:13px;
+  position:relative;z-index:2;
+}
+.ch-av{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--ember),var(--ember2));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(255,45,0,.35),inset 0 1px 0 rgba(255,255,255,.15);
+  position:relative;
+}
+.ch-av::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  border:1px solid rgba(255,45,0,.2);
+  animation:av-spin 8s linear infinite;
+  background:conic-gradient(from 0deg,rgba(255,45,0,.3),transparent 60%,rgba(255,45,0,.3));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  padding:2px;
+}
+@keyframes av-spin{to{transform:rotate(360deg)}}
+.ch-av-inner{font-size:.9rem;position:relative;z-index:1}
+.ch-info{flex:1;min-width:0}
+.ch-info h4{
+  font-family:var(--ff-d);font-size:1rem;letter-spacing:.08em;
+  color:var(--white);line-height:1;margin-bottom:4px;
+}
+.ch-status{display:flex;align-items:center;gap:5px;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.ch-status-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:sdot 2s ease infinite}
+@keyframes sdot{0%,100%{opacity:1}50%{opacity:.4}}
+.ch-close{
+  width:28px;height:28px;border-radius:6px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  color:var(--mist);cursor:none;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s,border-color .2s;flex-shrink:0;
+}
+.ch-close:hover{background:rgba(255,45,0,.12);border-color:rgba(255,45,0,.3);color:var(--ember)}
+
+/* Messages */
+.ch-msgs{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  min-height:260px;max-height:340px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,45,0,.15) transparent;
+}
+.ch-msgs::-webkit-scrollbar{width:3px}
+.ch-msgs::-webkit-scrollbar-thumb{background:rgba(255,45,0,.2);border-radius:2px}
+
+/* Message bubbles */
+.cmsg{
+  max-width:88%;font-size:.82rem;line-height:1.65;
+  animation:msgPop .35s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+@keyframes msgPop{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+
+.cmsg.bot{
+  align-self:flex-start;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px 16px 16px 3px;
+  padding:11px 15px;
+  color:#c8c4be;
+}
+.cmsg.usr{
+  align-self:flex-end;
+  background:linear-gradient(135deg,rgba(255,45,0,.2),rgba(255,101,0,.15));
+  border:1px solid rgba(255,45,0,.25);
+  border-radius:16px 16px 3px 16px;
+  padding:11px 15px;
+  color:var(--white);
+}
+
+/* Timestamp on messages */
+.cmsg-time{
+  font-size:.5rem;letter-spacing:.08em;
+  color:rgba(255,255,255,.2);
+  margin-top:4px;display:block;
+}
+.cmsg.usr .cmsg-time{text-align:right}
+
+/* Suggestions */
+.ch-sugg{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 4px}
+.csb{
+  font-size:.55rem;letter-spacing:.08em;padding:6px 12px;
+  border:1px solid rgba(255,45,0,.15);border-radius:20px;
+  color:rgba(255,45,0,.8);cursor:none;
+  background:rgba(255,45,0,.05);
+  font-family:var(--ff-m);
+  transition:all .2s;
+}
+.csb:hover{background:rgba(255,45,0,.12);border-color:rgba(255,45,0,.4);color:var(--ember);transform:translateY(-1px)}
+
+/* Typing indicator */
+.ch-typing{
+  align-self:flex-start;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px 16px 16px 3px;
+  padding:12px 16px;display:flex;gap:5px;align-items:center;
+}
+.ch-typing span{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--ember);
+  animation:tdot 1.3s ease infinite;
+}
+.ch-typing span:nth-child(2){animation-delay:.22s}
+.ch-typing span:nth-child(3){animation-delay:.44s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-5px);opacity:1}}
+
+/* Footer / Input area */
+.ch-foot{
+  padding:12px 16px;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:rgba(0,0,0,.3);
+  display:flex;gap:10px;align-items:flex-end;
+}
+.ch-inp-wrap{flex:1;position:relative}
+.ch-inp{
+  width:100%;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:10px 14px;
+  color:var(--white);
+  font-family:var(--ff-m);font-size:.82rem;
+  outline:none;resize:none;overflow:hidden;
+  caret-color:var(--ember);
+  transition:border-color .25s,box-shadow .25s,background .25s;
+  line-height:1.5;max-height:100px;
+}
+.ch-inp:focus{
+  border-color:rgba(255,45,0,.35);
+  background:rgba(255,45,0,.03);
+  box-shadow:0 0 0 3px rgba(255,45,0,.06);
+}
+.ch-inp::placeholder{color:rgba(255,255,255,.2)}
+.ch-send{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--ember),var(--ember2));
+  border:none;cursor:none;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(255,45,0,.3);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,opacity .2s;
+}
+.ch-send:hover{transform:scale(1.08) translateY(-2px);box-shadow:0 8px 24px rgba(255,45,0,.5)}
+.ch-send:disabled{opacity:.3;transform:none;box-shadow:none}
+.ch-powered{
+  text-align:center;padding:6px 16px 10px;
+  font-size:.52rem;letter-spacing:.1em;
+  color:rgba(255,255,255,.12);
+  text-transform:uppercase;
+}
+.ch-powered span{color:rgba(255,45,0,.4)}
 
 /* ══════════════════
    SCROLL TOP
@@ -528,16 +706,41 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 </div>
 
 <button id="stt" aria-label="Back to top">↑</button>
-<button id="chat-btn" aria-label="Open AI assistant">🛡</button>
+<button id="chat-btn" aria-label="Open AI assistant">
+  <svg class="ico-chat" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <svg class="ico-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
 
 <!-- CHAT -->
 <div id="chat-box" role="dialog" aria-label="RH² Security AI">
-  <div class="ch-hdr"><div class="ch-av">🛡</div><div class="ch-info"><h4>RH²-AI</h4><p>E2E ENCRYPTED · ONLINE</p></div><button class="ch-close" id="ch-close" aria-label="Close">✕</button></div>
-  <div class="ch-msgs" id="ch-msgs">
-    <div class="cmsg bot">Hello, Operator. I'm RH²-AI — your encrypted security intelligence assistant. How can I help?</div>
-    <div class="ch-sugg" id="ch-sugg"><button class="csb">Red Teaming?</button><button class="csb">PenTesting?</button><button class="csb">Pricing?</button><button class="csb">Meet the team</button></div>
+  <div class="ch-hdr">
+    <div class="ch-av">
+      <span class="ch-av-inner">🛡</span>
+    </div>
+    <div class="ch-info">
+      <h4>RH²-AI</h4>
+      <div class="ch-status"><span class="ch-status-dot"></span>Online · E2E Encrypted</div>
+    </div>
+    <button class="ch-close" id="ch-close" aria-label="Close">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
-  <div class="ch-foot"><textarea class="ch-inp" id="ch-inp" placeholder="Ask about security..." maxlength="2000" autocomplete="off" rows="1" style="resize:none;overflow:hidden"></textarea><button class="ch-send" id="ch-send">➤</button></div>
+  <div class="ch-msgs" id="ch-msgs">
+    <div class="cmsg bot">Hello, Operator. I'm <strong>RH²-AI</strong> — your encrypted security intelligence assistant. Ask me anything about cybersecurity, our services, or anything else.<span class="cmsg-time" id="ch-init-time"></span></div>
+    <div class="ch-sugg" id="ch-sugg">
+      <button class="csb">Red Teaming?</button>
+      <button class="csb">PenTesting?</button>
+      <button class="csb">Pricing?</button>
+      <button class="csb">Meet the team</button>
+    </div>
+  </div>
+  <div class="ch-foot">
+    <textarea class="ch-inp" id="ch-inp" placeholder="Ask anything…" maxlength="2000" autocomplete="off" rows="1"></textarea>
+    <button class="ch-send" id="ch-send" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="ch-powered">Secured by <span>RH²-Systems</span> · Powered by Groq AI</div>
 </div>
 
 <!-- HEADER -->
@@ -866,6 +1069,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
       <div class="cl-l" data-r data-rd="1">
         <p>Ready to fortify your infrastructure? Reach out for a confidential discussion about your security posture and threat exposure.</p>
         <div class="c-dets">
+          <div class="cd2"><div class="cd2-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><span class="cd2-lbl">Direct Email</span><div class="cd2-val"><a href="mailto:rh100az@gmail.com" style="color:var(--white);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ember)'" onmouseout="this.style.color='var(--white)'">rh100az@gmail.com</a></div></div></div>
           <div class="cd2"><div class="cd2-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><span class="cd2-lbl">Location</span><div class="cd2-val">Rajshahi Division, Bangladesh</div></div></div>
           <div class="cd2"><div class="cd2-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><span class="cd2-lbl">Availability</span><div class="cd2-val">24 / 7 Incident Support</div></div></div>
           <div class="cd2"><div class="cd2-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><span class="cd2-lbl">Channels</span><div class="cd2-val">Encrypted comms on request</div></div></div>
@@ -893,6 +1097,10 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
       <div class="ft-brand">
         <div class="logo">RH<em style="color:var(--ember)">²</em>-SYS</div>
         <p>Enterprise-grade cybersecurity and offensive security operations for high-risk infrastructure worldwide. 100% confidentiality guaranteed.</p>
+        <div style="display:flex;gap:12px;margin-top:20px">
+          <a href="mailto:rh100az@gmail.com" style="width:34px;height:34px;border:1px solid var(--b0);display:flex;align-items:center;justify-content:center;color:var(--mist);transition:color .2s,border-color .2s" aria-label="Email" onmouseover="this.style.color='var(--ember)';this.style.borderColor='rgba(255,45,0,.4)'" onmouseout="this.style.color='var(--mist)';this.style.borderColor='rgba(255,255,255,.04)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+          <a href="https://github.com/RH-Systems" target="_blank" rel="noopener noreferrer" style="width:34px;height:34px;border:1px solid var(--b0);display:flex;align-items:center;justify-content:center;color:var(--mist);transition:color .2s,border-color .2s" aria-label="GitHub" onmouseover="this.style.color='var(--ember)';this.style.borderColor='rgba(255,45,0,.4)'" onmouseout="this.style.color='var(--mist)';this.style.borderColor='rgba(255,255,255,.04)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        </div>
       </div>
       <div class="ft-col"><h5>Services</h5><ul><li><a href="#services">Penetration Testing</a></li><li><a href="#services">Red Team Operations</a></li><li><a href="#services">Secure Engineering</a></li></ul></div>
       <div class="ft-col"><h5>Company</h5><ul><li><a href="#team">Our Team</a></li><li><a href="#intel">Intel Scan</a></li><li><a href="#globe">Threat Globe</a></li><li><a href="#contact">Contact</a></li></ul></div>
@@ -1056,9 +1264,10 @@ if(_stt)_stt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smoot
 /* ── MOBILE NAV ── */
 const hburg=document.getElementById('h-burg');
 const mnav=document.getElementById('mob-nav');
-function closeMobileNav(){if(mnav)mnav.classList.remove('on');if(hburg)hburg.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+function closeMobileNav(){if(mnav)mnav.classList.remove('on');if(hburg){hburg.classList.remove('open');hburg.setAttribute('aria-expanded','false');}document.body.style.overflow='';}
 if(hburg)hburg.addEventListener('click',()=>{
   const on=mnav.classList.toggle('on');
+  hburg.classList.toggle('open',on);
   hburg.setAttribute('aria-expanded',on);
   document.body.style.overflow=on?'hidden':'';
 });
@@ -1516,9 +1725,30 @@ document.addEventListener('rh2-ready',()=>{
 (function(){
   const btn=document.getElementById('chat-btn'),box=document.getElementById('chat-box'),closeBtn=document.getElementById('ch-close'),msgs=document.getElementById('ch-msgs'),inp=document.getElementById('ch-inp'),send=document.getElementById('ch-send');
   if(!btn||!box)return;
-  btn.addEventListener('click',()=>{const on=box.classList.toggle('on');btn.classList.toggle('open',on);if(on&&inp)setTimeout(()=>inp.focus(),400);});
+
+  // Set initial timestamp
+  const initTime=document.getElementById('ch-init-time');
+  if(initTime)initTime.textContent=getTime();
+
+  function getTime(){const n=new Date();return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
+
+  btn.addEventListener('click',()=>{
+    const on=box.classList.toggle('on');
+    btn.classList.toggle('open',on);
+    if(on&&inp)setTimeout(()=>inp.focus(),400);
+  });
   if(closeBtn)closeBtn.addEventListener('click',()=>{box.classList.remove('on');btn.classList.remove('open');});
-  document.querySelectorAll('.csb').forEach(b=>b.addEventListener('click',()=>{inp.value=b.textContent;submit();}));
+
+  // Auto-resize textarea
+  if(inp){
+    inp.addEventListener('input',()=>{
+      inp.style.height='auto';
+      inp.style.height=Math.min(inp.scrollHeight,100)+'px';
+    });
+  }
+
+  document.querySelectorAll('.csb').forEach(b=>b.addEventListener('click',()=>{inp.value=b.textContent;inp.dispatchEvent(new Event('input'));submit();}));
+
   function renderText(el,text){
     const parts=text.split(/\*\*(.*?)\*\*/g);
     parts.forEach((part,i)=>{
@@ -1526,43 +1756,50 @@ document.addEventListener('rh2-ready',()=>{
       else{part.split('\n').forEach((line,li,arr)=>{el.appendChild(document.createTextNode(line));if(li<arr.length-1)el.appendChild(document.createElement('br'));});}
     });
   }
+
   function addMsg(text,role){
     const s=document.getElementById('ch-sugg');if(role==='usr'&&s)s.style.display='none';
     const el=document.createElement('div');el.className='cmsg '+role;
     if(role==='bot'){
       msgs.appendChild(el);
-      let i=0;const speed=5;
+      let i=0;const speed=6;
       function typeNext(){
         if(i<=text.length){
           el.innerHTML='';
           renderText(el,text.slice(0,i));
-          // add blinking cursor while typing
-          const cur=document.createElement('span');cur.style.cssText='display:inline-block;width:2px;height:1em;background:var(--ember);margin-left:2px;vertical-align:text-bottom;animation:cur-blink .6s step-end infinite';
+          const cur=document.createElement('span');
+          cur.style.cssText='display:inline-block;width:2px;height:.9em;background:var(--ember);margin-left:2px;vertical-align:text-bottom;animation:cur-blink .6s step-end infinite';
           el.appendChild(cur);
           msgs.scrollTop=msgs.scrollHeight;
           i++;setTimeout(typeNext,speed);
         }else{
-          el.innerHTML='';renderText(el,text);msgs.scrollTop=msgs.scrollHeight;
+          el.innerHTML='';renderText(el,text);
+          const ts=document.createElement('span');ts.className='cmsg-time';ts.textContent=getTime();
+          el.appendChild(ts);
+          msgs.scrollTop=msgs.scrollHeight;
         }
       }
       typeNext();
     }else{
       renderText(el,text);
+      const ts=document.createElement('span');ts.className='cmsg-time';ts.textContent=getTime();
+      el.appendChild(ts);
       msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
     }
   }
-  /* Groq AI via Vercel proxy — API key hidden server-side */
+
   const PROXY_URL='https://chatbot-api-ebon.vercel.app/api/chat';
   const chatHistory=[];
+
   async function ask(q){
     send.disabled=true;inp.disabled=true;
-    const typing=document.createElement('div');typing.className='ch-typing';typing.id='ch-typing';typing.innerHTML='<span></span><span></span><span></span>';
+    const typing=document.createElement('div');typing.className='ch-typing';typing.id='ch-typing';
+    typing.innerHTML='<span></span><span></span><span></span>';
     msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
     chatHistory.push({role:'user',content:q});
     try{
       const res=await fetch(PROXY_URL,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
+        method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({messages:chatHistory})
       });
       if(!res.ok){const err=await res.text();throw new Error('API '+res.status+': '+err.slice(0,120));}
@@ -1571,19 +1808,48 @@ document.addEventListener('rh2-ready',()=>{
       chatHistory.push({role:'assistant',content:reply});
       typing.remove();addMsg(reply,'bot');
     }catch(e){
-      typing.remove();addMsg('ERROR: '+e.message,'bot');
+      typing.remove();addMsg('⚠ '+e.message,'bot');
       chatHistory.pop();
     }
-    send.disabled=false;inp.disabled=false;inp.focus();
+    send.disabled=false;inp.disabled=false;
+    inp.style.height='auto';
+    inp.focus();
   }
-  function submit(){const q=inp.value.trim();if(!q||send.disabled)return;addMsg(q,'usr');inp.value='';ask(q);}
+
+  function submit(){
+    const q=inp.value.trim();if(!q||send.disabled)return;
+    addMsg(q,'usr');inp.value='';inp.style.height='auto';ask(q);
+  }
+
   send.addEventListener('click',submit);
   inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submit();}});
-  document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'){e.preventDefault();box.classList.add('on');btn.classList.add('open');setTimeout(()=>inp.focus(),400);}if(e.key==='Escape'){box.classList.remove('on');btn.classList.remove('open');}});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='/'&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'){
+      e.preventDefault();box.classList.add('on');btn.classList.add('open');setTimeout(()=>inp&&inp.focus(),400);
+    }
+    if(e.key==='Escape'){box.classList.remove('on');btn.classList.remove('open');}
+  });
 })();
 
 /* ── SMOOTH ANCHOR SCROLLING ── */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id==='#')return;const target=document.querySelector(id);if(target){e.preventDefault();const offset=70;const top=target.getBoundingClientRect().top+window.scrollY-offset;window.scrollTo({top,behavior:'smooth'});}});});
+
+/* ── ACTIVE NAV HIGHLIGHT ── */
+(function(){
+  const sections=document.querySelectorAll('section[id],#contact');
+  const navLinks=document.querySelectorAll('.nav-l a');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(a=>{
+          a.style.color='';
+          if(a.getAttribute('href')==='#'+e.target.id){a.style.color='var(--white)';}
+        });
+      }
+    });
+  },{threshold:.3,rootMargin:'-70px 0px 0px 0px'});
+  sections.forEach(s=>obs.observe(s));
+})();
 
 /* ── SUCCESS OVERLAY CLOSE (moved out of Firebase module for reliability) ── */
 (function(){
