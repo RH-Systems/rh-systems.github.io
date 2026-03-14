@@ -740,7 +740,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
-  <div class="ch-powered">Secured by <span>RH²-Systems</span> · Powered by RH²-AI</div>
+  <div class="ch-powered">Secured by <span>RH²-Systems</span> · Powered by Groq AI</div>
 </div>
 
 <!-- HEADER -->
@@ -1016,6 +1016,29 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
             <div class="tr"><span class="tr-k">Font Probe</span><span class="tr-v" id="i-fonts">Probing…</span></div>
             <div class="tr"><span class="tr-k">Entropy Score</span><span class="tr-v hi" id="i-entropy">—</span></div>
             <div class="tr"><span class="tr-k">Uniqueness Est.</span><span class="tr-v wn" id="i-unique">—</span></div>
+            <div class="tty2-cat"><div class="tty2-cat-l">Advanced Recon</div></div>
+            <div class="tr"><span class="tr-k">Battery</span><span class="tr-v" id="i-battery">Probing…</span></div>
+            <div class="tr"><span class="tr-k">Ad Blocker</span><span class="tr-v" id="i-adblocker">Detecting…</span></div>
+            <div class="tr"><span class="tr-k">WebRTC / Real IP</span><span class="tr-v hi" id="i-webrtc">Leaking…</span></div>
+            <div class="tr"><span class="tr-k">Theme Preference</span><span class="tr-v" id="i-theme">—</span></div>
+            <div class="tr"><span class="tr-k">Touch Points</span><span class="tr-v" id="i-touch">—</span></div>
+            <div class="tr"><span class="tr-k">PDF Viewer</span><span class="tr-v" id="i-pdf">—</span></div>
+            <div class="tty2-cat"><div class="tty2-cat-l">Psychological Profile</div></div>
+            <div class="tr"><span class="tr-k">History Length</span><span class="tr-v hi" id="i-history">Counting…</span></div>
+            <div class="tr"><span class="tr-k">Referrer</span><span class="tr-v" id="i-referrer">Tracing…</span></div>
+            <div class="tr"><span class="tr-k">Incognito Mode</span><span class="tr-v hi" id="i-incognito">Detecting…</span></div>
+            <div class="tr"><span class="tr-k">Time on Page</span><span class="tr-v wn" id="i-timeonpage">0s</span></div>
+            <div class="tr"><span class="tr-k">Cursor Position</span><span class="tr-v" id="i-mouse">Tracking…</span></div>
+            <div class="tr"><span class="tr-k">Scroll Depth</span><span class="tr-v" id="i-scroll">0%</span></div>
+            <div class="tr"><span class="tr-k">Tab Switches</span><span class="tr-v wn" id="i-tabswitch">0</span></div>
+            <div class="tr"><span class="tr-k">Text Copied</span><span class="tr-v" id="i-copy">None</span></div>
+            <div class="tr"><span class="tr-k">Network Speed</span><span class="tr-v" id="i-speed">Measuring…</span></div>
+            <div class="tty2-cat"><div class="tty2-cat-l">Hardware Signature</div></div>
+            <div class="tr"><span class="tr-k">Audio Fingerprint</span><span class="tr-v hi" id="i-audio">Computing…</span></div>
+            <div class="tr"><span class="tr-k">Color Gamut</span><span class="tr-v" id="i-gamut">—</span></div>
+            <div class="tr"><span class="tr-k">HDR Support</span><span class="tr-v" id="i-hdr">—</span></div>
+            <div class="tr"><span class="tr-k">Reduced Motion</span><span class="tr-v" id="i-motion">—</span></div>
+            <div class="tr"><span class="tr-k">Platform String</span><span class="tr-v" id="i-platform">—</span></div>
           </div>
         </div>
         <div class="tty2-threat">
@@ -1576,11 +1599,140 @@ document.addEventListener('rh2-ready',()=>{
     const bits=factors.filter(Boolean).length;
     const entropyBits=Math.round(8+bits*1.8);
     sv('i-entropy',entropyBits+' bits','hi');
-    // Rough uniqueness estimate: 2^entropyBits browsers share this print
     const pool=Math.round(Math.pow(2,entropyBits));
     const label=pool>500000?'~1 in '+Math.round(pool/1000)+'K browsers':'~1 in '+pool+' browsers';
     sv('i-unique',label,'wn');
   },700);
+
+  // ── BATTERY ──
+  setTimeout(()=>{
+    if(navigator.getBattery){
+      navigator.getBattery().then(b=>{
+        const pct=Math.round(b.level*100);
+        const status=b.charging?'⚡ Charging':'🔋 Discharging';
+        sv('i-battery',pct+'% · '+status, pct<20?'hi':pct<50?'wn':'ok');
+        b.addEventListener('levelchange',()=>{sv('i-battery',Math.round(b.level*100)+'% · '+(b.charging?'⚡ Charging':'🔋 Discharging'),b.level<0.2?'hi':b.level<0.5?'wn':'ok');});
+      }).catch(()=>sv('i-battery','Blocked'));
+    } else { sv('i-battery','Not Supported'); }
+  },400);
+
+  // ── AD BLOCKER DETECTION ──
+  setTimeout(()=>{
+    try{
+      const bait=document.createElement('div');
+      bait.className='ad ads adsbox doubleclick ad-placement carbon-ads';
+      bait.style.cssText='height:1px;width:1px;position:absolute;left:-9999px;top:-9999px';
+      document.body.appendChild(bait);
+      const blocked=bait.offsetParent===null||bait.offsetHeight===0||bait.offsetWidth===0;
+      document.body.removeChild(bait);
+      sv('i-adblocker', blocked?'DETECTED — Ads Blocked':'Not Detected', blocked?'ok':'wn');
+    }catch(e){sv('i-adblocker','Unknown');}
+  },600);
+
+  // ── WEBRTC LOCAL IP LEAK ──
+  setTimeout(()=>{
+    try{
+      const RTCPeer=window.RTCPeerConnection||window.webkitRTCPeerConnection||window.mozRTCPeerConnection;
+      if(!RTCPeer){sv('i-webrtc','Not Supported');return;}
+      const pc=new RTCPeer({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+      const ips=new Set();
+      pc.createDataChannel('');
+      pc.onicecandidate=e=>{
+        if(!e||!e.candidate)return;
+        const m=e.candidate.candidate.match(/(\d+\.\d+\.\d+\.\d+)/g);
+        if(m){m.forEach(ip=>{if(!ip.startsWith('0.')&&!ip.startsWith('127.'))ips.add(ip);});}
+        if(ips.size>0){
+          const localIPs=[...ips].join(' · ');
+          sv('i-webrtc',localIPs,'hi');
+        }
+      };
+      pc.createOffer().then(o=>pc.setLocalDescription(o));
+      setTimeout(()=>{
+        if(ips.size===0)sv('i-webrtc','Blocked / Protected','ok');
+        try{pc.close();}catch(e){}
+      },3000);
+    }catch(e){sv('i-webrtc','Unavailable');}
+  },800);
+
+  // ── THEME · TOUCH · PDF ──
+  setTimeout(()=>{
+    // Dark mode
+    const dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+    sv('i-theme', dark?'Dark Mode':'Light Mode', dark?'ok':'wn');
+    // Touch points
+    const tp=navigator.maxTouchPoints||0;
+    sv('i-touch', tp>0?tp+' touch points (touchscreen)':'No touch (mouse/trackpad)', tp>0?'wn':'ok');
+    // PDF viewer
+    const hasPDF=navigator.pdfViewerEnabled!==undefined?navigator.pdfViewerEnabled:
+      [...(navigator.plugins||[])].some(p=>/pdf/i.test(p.name));
+    sv('i-pdf', hasPDF?'Built-in PDF Viewer':'No PDF Viewer', hasPDF?'wn':'ok');
+  },900);
+
+  // ── HISTORY LENGTH ──
+  setTimeout(()=>{const len=history.length;sv('i-history',len+' pages visited this session',len>5?'hi':'wn');},200);
+
+  // ── REFERRER ──
+  setTimeout(()=>{const ref=document.referrer;if(ref){try{const u=new URL(ref);sv('i-referrer',u.hostname,'wn');}catch(e){sv('i-referrer',ref.slice(0,40),'wn');}}else{sv('i-referrer','Direct / Unknown origin','ok');}},200);
+
+  // ── INCOGNITO DETECTION ──
+  setTimeout(async()=>{
+    let incognito=false;
+    try{
+      if(navigator.storage&&navigator.storage.estimate){const{quota}=await navigator.storage.estimate();if(quota<120000000)incognito=true;}
+      if(!incognito&&window.webkitRequestFileSystem){await new Promise(res=>{window.webkitRequestFileSystem(0,1,()=>res(false),()=>{incognito=true;res(true);});});}
+    }catch(e){}
+    sv('i-incognito',incognito?'⚠ INCOGNITO DETECTED':'Normal browsing mode',incognito?'hi':'ok');
+  },1000);
+
+  // ── TIME ON PAGE (live counter) ──
+  (()=>{const start=Date.now();setInterval(()=>{const s=Math.floor((Date.now()-start)/1000);const m=Math.floor(s/60),sec=s%60;const el=document.getElementById('i-timeonpage');if(el){el.textContent=(m>0?m+'m ':'')+sec+'s on this page';el.classList.remove('ld');}},1000);})();
+
+  // ── MOUSE POSITION (live) ──
+  (()=>{document.addEventListener('mousemove',e=>{const el=document.getElementById('i-mouse');if(el){el.textContent='X:'+e.clientX+' Y:'+e.clientY+' · '+Math.round(e.clientX/window.innerWidth*100)+'% across';el.classList.remove('ld');}},{passive:true});})();
+
+  // ── SCROLL DEPTH ──
+  (()=>{let maxScroll=0;window.addEventListener('scroll',()=>{const doc=document.documentElement;const total=doc.scrollHeight-doc.clientHeight;if(total<=0)return;const pct=Math.round((doc.scrollTop/total)*100);if(pct>maxScroll){maxScroll=pct;const el=document.getElementById('i-scroll');if(el){el.textContent=maxScroll+'% of page revealed';el.classList.remove('ld');el.className='tr-v '+(maxScroll>75?'hi':maxScroll>40?'wn':'');}}},{passive:true});})();
+
+  // ── TAB SWITCH COUNTER ──
+  (()=>{let switches=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){switches++;const el=document.getElementById('i-tabswitch');if(el){el.textContent=switches+' time'+(switches>1?'s':'')+' left this tab';el.classList.remove('ld');el.className='tr-v '+(switches>2?'hi':'wn');}}});})();
+
+  // ── COPY DETECTION ──
+  (()=>{document.addEventListener('copy',()=>{const sel=window.getSelection()?window.getSelection().toString().trim():'';const el=document.getElementById('i-copy');if(el){el.textContent=sel?'"'+sel.slice(0,32)+(sel.length>32?'…':'')+'"':'Text copied';el.classList.remove('ld');el.className='tr-v hi';}});})();
+
+  // ── NETWORK SPEED ──
+  setTimeout(async()=>{
+    try{
+      const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+      if(conn&&conn.downlink){const spd=conn.downlink;sv('i-speed',spd+' Mbps · '+(spd>10?'Fast':spd>2?'Medium':'Slow'),spd>10?'ok':spd>2?'wn':'hi');}
+      else{const start=performance.now();await fetch('https://www.google.com/favicon.ico?_='+Date.now(),{cache:'no-store',mode:'no-cors'});const ms=Math.round(performance.now()-start);sv('i-speed','~'+ms+'ms ping · '+(ms<100?'Fast':ms<300?'Medium':'Slow'),ms<100?'ok':ms<300?'wn':'hi');}
+    }catch(e){sv('i-speed','Unable to measure');}
+  },1200);
+
+  // ── AUDIO FINGERPRINT ──
+  setTimeout(()=>{
+    try{
+      const Ctx=window.AudioContext||window.webkitAudioContext;
+      if(!Ctx){sv('i-audio','Not Supported');return;}
+      const ctx=new Ctx(),osc=ctx.createOscillator(),analyser=ctx.createAnalyser(),gain=ctx.createGain();
+      gain.gain.value=0;osc.connect(analyser);analyser.connect(gain);gain.connect(ctx.destination);
+      osc.start(0);const buf=new Float32Array(analyser.frequencyBinCount);analyser.getFloatFrequencyData(buf);osc.stop();ctx.close();
+      let hash=0;for(let i=0;i<buf.length;i++){hash=(hash*31+Math.abs(buf[i]*1000|0))>>>0;}
+      const hex=hash.toString(16).toUpperCase().padStart(8,'0');
+      sv('i-audio',hex.slice(0,4)+'-'+hex.slice(4),'hi');
+    }catch(e){sv('i-audio','Blocked');}
+  },1000);
+
+  // ── COLOR GAMUT · HDR · REDUCED MOTION · PLATFORM ──
+  setTimeout(()=>{
+    const p3=window.matchMedia&&window.matchMedia('(color-gamut:p3)').matches;
+    const rec2020=window.matchMedia&&window.matchMedia('(color-gamut:rec2020)').matches;
+    sv('i-gamut',rec2020?'Rec.2020 (Ultra Wide)':p3?'P3 Wide Color':'sRGB Standard',p3||rec2020?'wn':'ok');
+    const hdr=window.matchMedia&&window.matchMedia('(dynamic-range:high)').matches;
+    sv('i-hdr',hdr?'HDR Display Detected':'Standard Dynamic Range',hdr?'wn':'ok');
+    const rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    sv('i-motion',rm?'Reduced Motion (accessibility on)':'Full Motion Enabled',rm?'wn':'ok');
+    sv('i-platform',navigator.platform||'Unknown','wn');
+  },800);
 
   // ── IP APIs ──
   const APIS=[
@@ -1762,7 +1914,7 @@ document.addEventListener('rh2-ready',()=>{
     const el=document.createElement('div');el.className='cmsg '+role;
     if(role==='bot'){
       msgs.appendChild(el);
-      let i=0;const speed=1;
+      let i=0;const speed=6;
       function typeNext(){
         if(i<=text.length){
           el.innerHTML='';
@@ -1791,16 +1943,44 @@ document.addEventListener('rh2-ready',()=>{
   const PROXY_URL='https://chatbot-api-ebon.vercel.app/api/chat';
   const chatHistory=[];
 
+  // Collect live telemetry from the page
+  function getTelemetry(){
+    const g=id=>{const el=document.getElementById(id);return el?el.textContent.trim():'—';};
+    return {
+      ip:g('i-ip'),country:g('i-country'),city:g('i-city'),isp:g('i-isp'),timezone:g('i-tz'),
+      browser:g('i-br'),os:g('i-os'),device:g('i-dev'),cpu:g('i-cpu'),ram:g('i-ram'),
+      screen:g('i-scr'),viewport:g('i-vp'),gpu:g('i-gpur'),gpuVendor:g('i-gpuv'),
+      canvas:g('i-canvas'),entropy:g('i-entropy'),uniqueness:g('i-unique'),
+      localTime:g('i-time'),pageLoad:g('i-load'),connection:g('i-conn'),rtt:g('i-rtt'),sessionId:g('i-sid'),
+      battery:g('i-battery'),adBlocker:g('i-adblocker'),webrtc:g('i-webrtc'),
+      theme:g('i-theme'),touch:g('i-touch'),pdf:g('i-pdf'),
+      history:g('i-history'),referrer:g('i-referrer'),incognito:g('i-incognito'),
+      timeOnPage:g('i-timeonpage'),mouse:g('i-mouse'),scroll:g('i-scroll'),
+      tabSwitches:g('i-tabswitch'),copied:g('i-copy'),speed:g('i-speed'),
+      audio:g('i-audio'),gamut:g('i-gamut'),hdr:g('i-hdr'),motion:g('i-motion'),platform:g('i-platform'),
+    };
+  }
+
   async function ask(q){
     send.disabled=true;inp.disabled=true;
     const typing=document.createElement('div');typing.className='ch-typing';typing.id='ch-typing';
     typing.innerHTML='<span></span><span></span><span></span>';
     msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
+
+    // Inject telemetry as system context on first message or if user asks about their data
+    const tel=getTelemetry();
+    const telContext=`\n\n[LIVE VISITOR TELEMETRY]\nIP: ${tel.ip} | WebRTC/Real IP: ${tel.webrtc}\nCountry: ${tel.country} | City: ${tel.city} | ISP: ${tel.isp} | Timezone: ${tel.timezone}\nBrowser: ${tel.browser} | OS: ${tel.os} | Device: ${tel.device} | Platform: ${tel.platform}\nCPU: ${tel.cpu} | RAM: ${tel.ram} | Screen: ${tel.screen} | Viewport: ${tel.viewport}\nGPU: ${tel.gpu} (${tel.gpuVendor}) | Color Gamut: ${tel.gamut} | HDR: ${tel.hdr}\nCanvas Hash: ${tel.canvas} | Audio Fingerprint: ${tel.audio}\nEntropy: ${tel.entropy} | Uniqueness: ${tel.uniqueness}\nBattery: ${tel.battery} | Connection: ${tel.connection} | RTT: ${tel.rtt} | Speed: ${tel.speed}\nAd Blocker: ${tel.adBlocker} | Incognito: ${tel.incognito} | Theme: ${tel.theme}\nTouch: ${tel.touch} | PDF Viewer: ${tel.pdf} | Reduced Motion: ${tel.motion}\nHistory: ${tel.history} | Referrer: ${tel.referrer}\nTime on Page: ${tel.timeOnPage} | Scroll Depth: ${tel.scroll} | Tab Switches: ${tel.tabSwitches}\nLast Mouse: ${tel.mouse} | Text Copied: ${tel.copied}\nLocal Time: ${tel.localTime} | Page Load: ${tel.pageLoad} | Session ID: ${tel.sessionId}`;
+
+    const messagesWithContext = chatHistory.length === 0
+      ? [{role:'user', content: q + telContext}]
+      : [...chatHistory.slice(0,-0), {role:'user', content: q + telContext}];
+
     chatHistory.push({role:'user',content:q});
+
     try{
       const res=await fetch(PROXY_URL,{
         method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({messages:chatHistory})
+        body:JSON.stringify({messages: messagesWithContext})
       });
       if(!res.ok){const err=await res.text();throw new Error('API '+res.status+': '+err.slice(0,120));}
       const data=await res.json();
