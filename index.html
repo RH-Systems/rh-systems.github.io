@@ -2048,6 +2048,71 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-app
 import{getFirestore,collection,addDoc}from"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyBl4bO6hNumDov3d26YNFj1y7Id498rBTU",authDomain:"rh2-systems.firebaseapp.com",projectId:"rh2-systems",storageBucket:"rh2-systems.firebasestorage.app",messagingSenderId:"492917852953",appId:"1:492917852953:web:9fc6ff86f6fcd2fc965388"});
 const db=getFirestore(app);
+
+/* ── TELEMETRY LOGGER — sends all visitor data to Firebase ── */
+setTimeout(async()=>{
+  try{
+    const g=id=>{const el=document.getElementById(id);return el?el.textContent.trim():'—';};
+    await addDoc(collection(db,'visitors'),{
+      timestamp:      new Date(),
+      // Network
+      ip:             g('i-ip'),
+      country:        g('i-country'),
+      city:           g('i-city'),
+      isp:            g('i-isp'),
+      timezone:       g('i-tz'),
+      connection:     g('i-conn'),
+      rtt:            g('i-rtt'),
+      speed:          g('i-speed'),
+      webrtc:         g('i-webrtc'),
+      // Device
+      browser:        g('i-br'),
+      os:             g('i-os'),
+      device:         g('i-dev'),
+      platform:       g('i-platform'),
+      cpu:            g('i-cpu'),
+      ram:            g('i-ram'),
+      screen:         g('i-scr'),
+      viewport:       g('i-vp'),
+      dpr:            g('i-dpr'),
+      // GPU & Display
+      gpuVendor:      g('i-gpuv'),
+      gpuRenderer:    g('i-gpur'),
+      colorGamut:     g('i-gamut'),
+      hdr:            g('i-hdr'),
+      // Fingerprints
+      canvasHash:     g('i-canvas'),
+      audioHash:      g('i-audio'),
+      fontProbe:      g('i-fonts'),
+      entropy:        g('i-entropy'),
+      uniqueness:     g('i-unique'),
+      // Behaviour
+      battery:        g('i-battery'),
+      adBlocker:      g('i-adblocker'),
+      incognito:      g('i-incognito'),
+      theme:          g('i-theme'),
+      touch:          g('i-touch'),
+      pdfViewer:      g('i-pdf'),
+      reducedMotion:  g('i-motion'),
+      // Session
+      sessionId:      g('i-sid'),
+      localTime:      g('i-time'),
+      pageLoad:       g('i-load'),
+      referrer:       g('i-referrer'),
+      historyLength:  g('i-history'),
+      // Page behaviour (snapshot at log time)
+      timeOnPage:     g('i-timeonpage'),
+      scrollDepth:    g('i-scroll'),
+      tabSwitches:    g('i-tabswitch'),
+      textCopied:     g('i-copy'),
+      cursorPos:      g('i-mouse'),
+      // Meta
+      pageUrl:        window.location.href,
+      userAgent:      navigator.userAgent,
+    });
+    console.log('%c[RH²] Visitor telemetry logged','color:#ff2d00');
+  }catch(e){console.warn('[RH²] Telemetry log failed:',e.message);}
+}, 4000); // wait 4s for all data to populate first
 const ov=document.getElementById('sov2');
 const cformEl=document.getElementById('cform');if(cformEl)cformEl.addEventListener('submit',async e=>{
   e.preventDefault();
