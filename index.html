@@ -2426,4 +2426,16 @@ const cformEl=document.getElementById('cform');if(cformEl)cformEl.addEventListen
     const safeName=name.slice(0,120);
     const safeEmail=email.slice(0,254);
     const safeMsg=message.slice(0,2000);
-    await addDoc(collection(db,'messages'),{name:safeName,email:safeEmail,message:safeMs
+    await addDoc(collection(db,'messages'),{name:safeName,email:safeEmail,message:safeMsg,timestamp:new Date()});
+    btn.querySelector('span').textContent='TRANSMITTED ✓';
+    if(ov)ov.classList.add('on');
+    setTimeout(()=>{btn.querySelector('span').textContent='TRANSMIT ENCRYPTED REQUEST';btn.disabled=false;},3000);
+  }catch(err){
+    console.error('[RH²] Form error:',err);
+    btn.querySelector('span').textContent='ERROR — RETRY';
+    btn.disabled=false;
+  }
+});
+</script>
+</body>
+</html>
