@@ -654,6 +654,124 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
 @keyframes sov-pulse-border{0%,100%{opacity:.55}50%{opacity:1}}
 
 /* ══════════════════
+   PROJECTS CTA
+══════════════════ */
+#projects-cta{
+  padding:140px 0;
+  background:var(--void);
+  position:relative;
+  overflow:hidden;
+  border-top:1px solid var(--b0);
+}
+#projects-cta::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 100% at 50% 50%,rgba(255,45,0,.055) 0%,transparent 68%);
+}
+/* Scan grid overlay */
+#projects-cta::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,45,0,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,45,0,.025) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 80%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 80%);
+}
+.proj-inner{
+  position:relative;z-index:1;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
+  gap:32px;
+}
+.proj-eyebrow{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:8px 20px;
+  border:1px solid rgba(255,45,0,.22);
+  background:rgba(255,45,0,.04);
+  font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ember);
+}
+.proj-title-wrap{overflow:hidden}
+.proj-title{
+  font-family:var(--ff-d);
+  font-size:clamp(4.5rem,13vw,15rem);
+  line-height:.88;
+  letter-spacing:.02em;
+  display:block;
+}
+.proj-title-solid{
+  background:linear-gradient(90deg,var(--ember),var(--ember2),var(--ember3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.proj-title-ghost{
+  -webkit-text-stroke:1px rgba(255,255,255,.1);
+  -webkit-text-fill-color:transparent;
+  display:block;
+}
+.proj-divider{
+  width:1px;height:60px;
+  background:linear-gradient(to bottom,transparent,var(--ember),transparent);
+  box-shadow:0 0 12px var(--ember);
+  opacity:.5;
+  animation:arr-fall 2.2s ease-in-out infinite;
+}
+.proj-desc{
+  color:var(--mist);font-size:.92rem;line-height:2;
+  max-width:480px;
+}
+.proj-desc strong{color:var(--white);}
+/* The big CTA button */
+.proj-btn{
+  display:inline-flex;align-items:center;gap:20px;
+  padding:24px 60px;
+  border:1px solid rgba(255,45,0,.45);
+  color:var(--ember);
+  font-family:var(--ff-m);font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;
+  position:relative;overflow:hidden;
+  transition:color .35s,transform .45s var(--ease-out),box-shadow .45s;
+  margin-top:8px;
+}
+.proj-btn::before{
+  content:'';position:absolute;inset:0;
+  background:var(--ember);
+  transform:translateX(-101%);
+  transition:transform .5s var(--ease-out);
+  z-index:0;
+}
+.proj-btn::after{display:none!important}
+.proj-btn:hover{
+  color:var(--void)!important;
+  transform:translateY(-5px);
+  box-shadow:0 24px 60px rgba(255,45,0,.22);
+}
+.proj-btn:hover::before{transform:translateX(0);}
+.proj-btn-inner{position:relative;z-index:1;display:flex;align-items:center;gap:16px;}
+.proj-btn-hex{font-size:1rem;opacity:.8;}
+.proj-btn-arr{
+  display:inline-block;
+  transition:transform .35s var(--ease-out);
+  font-size:1rem;line-height:1;
+}
+.proj-btn:hover .proj-btn-arr{transform:translateX(8px);}
+/* Stat pills */
+.proj-stats{
+  display:flex;align-items:center;gap:0;
+  border:1px solid var(--b0);
+  overflow:hidden;
+  margin-top:4px;
+}
+.proj-stat{
+  padding:14px 32px;
+  border-right:1px solid var(--b0);
+  font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);
+  position:relative;
+  transition:background .3s,color .3s;
+}
+.proj-stat:last-child{border-right:none;}
+.proj-stat em{font-style:normal;color:var(--ember);display:block;font-family:var(--ff-d);font-size:1.6rem;letter-spacing:.04em;line-height:1;margin-bottom:4px;}
+.proj-stat:hover{background:rgba(255,45,0,.04);color:var(--white);}
+
+/* ══════════════════
    SCROLL TOP
 ══════════════════ */
 #stt{position:fixed;bottom:32px;right:96px;z-index:500;width:44px;height:44px;border:1px solid var(--b0);background:rgba(0,0,0,.8);color:var(--mist);display:flex;align-items:center;justify-content:center;font-size:1rem;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s,color .3s,border-color .3s;cursor:none}
@@ -781,12 +899,13 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
       <li><a href="#services">Services</a></li>
       <li><a href="#team">Team</a></li>
       <li><a href="#intel">Intel</a></li>
+      <li><a href="https://rh-systems.github.io/projects/" target="_blank" rel="noopener noreferrer">Projects</a></li>
       <li><a href="#contact" class="nav-cta">Engage</a></li>
     </ul>
     <button class="h-burg" id="h-burg" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </nav></div>
 </header>
-<nav class="mob-nav" id="mob-nav"><a href="#services">Services</a><a href="#team">Team</a><a href="#intel">Intel</a><a href="#contact">Contact</a></nav>
+<nav class="mob-nav" id="mob-nav"><a href="#services">Services</a><a href="#team">Team</a><a href="#intel">Intel</a><a href="https://rh-systems.github.io/projects/" target="_blank" rel="noopener noreferrer">Projects</a><a href="#contact">Contact</a></nav>
 
 <main>
 
@@ -1143,6 +1262,34 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
   </div>
 </section>
 
+<!-- ══ PROJECTS CTA ══ -->
+<section id="projects-cta">
+  <div class="W proj-inner">
+    <div class="proj-eyebrow" data-r><span class="chip-dot"></span>06 — Side Projects · Open Work</div>
+    <div class="proj-title-wrap" data-r data-rd="1">
+      <span class="proj-title proj-title-solid">OUR</span>
+      <span class="proj-title proj-title-ghost">PROJECTS</span>
+    </div>
+    <div class="proj-divider" aria-hidden="true"></div>
+    <p class="proj-desc" data-r data-rd="2">
+      Open-source tools, <strong>security research</strong>, and side operations built by the RH²-Systems team.
+      From exploit frameworks to recon automation — built in the dark, shipped in the open.
+    </p>
+    <div class="proj-stats" data-r data-rd="3">
+      <div class="proj-stat"><em>∞</em>In Progress</div>
+      <div class="proj-stat"><em>⬡</em>Open Source</div>
+      <div class="proj-stat"><em>◈</em>Built by NYX &amp; STYX</div>
+    </div>
+    <a href="https://rh-systems.github.io/projects/" target="_blank" rel="noopener noreferrer" class="proj-btn" data-r data-rd="4">
+      <span class="proj-btn-inner">
+        <span class="proj-btn-hex">⬡</span>
+        <span>EXPLORE ALL PROJECTS</span>
+        <span class="proj-btn-arr">→</span>
+      </span>
+    </a>
+  </div>
+</section>
+
 <!-- ══ FOOTER ══ -->
 <footer>
   <div class="W">
@@ -1156,7 +1303,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
         </div>
       </div>
       <div class="ft-col"><h5>Services</h5><ul><li><a href="#services">Penetration Testing</a></li><li><a href="#services">Red Team Operations</a></li><li><a href="#services">Secure Engineering</a></li></ul></div>
-      <div class="ft-col"><h5>Company</h5><ul><li><a href="#team">Our Team</a></li><li><a href="#intel">Intel Scan</a></li><li><a href="#globe">Threat Globe</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div class="ft-col"><h5>Company</h5><ul><li><a href="#team">Our Team</a></li><li><a href="#intel">Intel Scan</a></li><li><a href="#globe">Threat Globe</a></li><li><a href="https://rh-systems.github.io/projects/" target="_blank" rel="noopener noreferrer">Projects</a></li><li><a href="#contact">Contact</a></li></ul></div>
     </div>
     <div class="ft-bot">
       <div class="ft-copy">© 2026 RH²-SYSTEMS · ALL RIGHTS RESERVED · CONFIDENTIALITY GUARANTEED</div>
@@ -1298,7 +1445,7 @@ footer{background:var(--void);border-top:1px solid var(--b0);padding:80px 0 44px
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
   function cursorLoop(){if(!_cursorVis){_rafCursor=null;return;}_rafCursor=requestAnimationFrame(cursorLoop);rx+=(mx-rx)*.12;ry+=(my-ry)*.12;dot.style.transform=`translate(${mx}px,${my}px)`;ring.style.transform=`translate(${rx}px,${ry}px)`;}
   cursorLoop();
-  document.querySelectorAll('a,button,.svc-c,.tc,.cta-prime,.cta-sec,.fsub2,.nav-cta').forEach(el=>{
+  document.querySelectorAll('a,button,.svc-c,.tc,.cta-prime,.cta-sec,.fsub2,.nav-cta,.proj-btn').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('chov'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('chov'));
   });
@@ -1528,7 +1675,7 @@ document.addEventListener('rh2-ready',()=>{
 /* ── MAGNETIC BUTTONS ── */
 (function(){
   if(window.matchMedia('(max-width:900px)').matches)return;
-  document.querySelectorAll('.cta-prime,.nav-cta,.fsub2').forEach(btn=>{
+  document.querySelectorAll('.cta-prime,.nav-cta,.fsub2,.proj-btn').forEach(btn=>{
     let raf=false;
     btn.addEventListener('mousemove',e=>{if(raf)return;raf=true;requestAnimationFrame(()=>{raf=false;const r=btn.getBoundingClientRect();const x=(e.clientX-r.left-r.width/2)*.2;const y=(e.clientY-r.top-r.height/2)*.24-4;btn.style.transform=`translate(${x}px,${y}px)`;});},{passive:true});
     btn.addEventListener('mouseleave',()=>{btn.style.transition='transform .6s cubic-bezier(.175,.885,.32,1.275)';btn.style.transform='';setTimeout(()=>btn.style.transition='',600);});
