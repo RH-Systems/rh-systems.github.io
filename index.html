@@ -2597,30 +2597,67 @@ const cformEl=document.getElementById('cform');if(cformEl)cformEl.addEventListen
 </script>
 
 <!-- BACKGROUND AUDIO -->
-<audio id="bg-audio" loop preload="auto">
+<audio id="bg-audio" loop preload="auto" muted playsinline>
   <source src="bg.mp3" type="audio/mpeg">
 </audio>
 <script>
 (function(){
   const audio = document.getElementById('bg-audio');
   audio.volume = 0.5;
+  let unlocked = false;
 
-  // Attempt autoplay immediately
-  const tryPlay = () => audio.play().catch(() => {});
+  // ── Strategy 1: muted autoplay → instant unmute (works on Chrome/Android/most desktop)
+  audio.muted = true;
+  audio.play().then(() => {
+    audio.muted = false;
+    unlocked = true;
+  }).catch(() => {});
 
-  // Try right away
-  tryPlay();
+  // ── Strategy 2: AudioContext unlock (best trick for iOS Safari)
+  function audioContextUnlock() {
+    if (unlocked) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+      ctx.resume().then(() => {
+        audio.muted = false;
+        audio.play().then(() => { unlocked = true; }).catch(() => {});
+      });
+    } catch(e) {}
+  }
 
-  // Fallback: play on first user interaction (browsers often block autoplay)
-  const unlock = () => {
-    tryPlay();
-    ['click','touchstart','keydown','scroll'].forEach(ev =>
-      document.removeEventListener(ev, unlock)
-    );
-  };
-  ['click','touchstart','keydown','scroll'].forEach(ev =>
-    document.addEventListener(ev, unlock, { once: true, passive: true })
-  );
+  // ── Strategy 3: fire on any user interaction — silent, invisible
+  const EVENTS = ['touchstart','touchend','click','keydown','scroll','pointerdown'];
+  function onInteraction() {
+    audioContextUnlock();
+    if (!unlocked) {
+      audio.muted = false;
+      audio.play().then(() => { unlocked = true; }).catch(() => {});
+    }
+    if (unlocked) EVENTS.forEach(ev => document.removeEventListener(ev, onInteraction));
+  }
+  EVENTS.forEach(ev => document.addEventListener(ev, onInteraction, { passive: true }));
+
+  // ── Strategy 4: retry when tab becomes visible (e.g. user switches back)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && audio.paused) {
+      audio.muted = false;
+      audio.play().then(() => { unlocked = true; }).catch(() => {});
+    }
+  });
+
+  // ── Strategy 5: retry after page fully loaded
+  window.addEventListener('load', () => {
+    if (!unlocked) {
+      audio.play().then(() => { audio.muted = false; unlocked = true; }).catch(() => {});
+    }
+  });
 })();
 </script>
 </body>
