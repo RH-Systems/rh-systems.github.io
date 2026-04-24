@@ -2595,5 +2595,33 @@ const cformEl=document.getElementById('cform');if(cformEl)cformEl.addEventListen
   }
 });
 </script>
+
+<!-- BACKGROUND AUDIO -->
+<audio id="bg-audio" loop preload="auto">
+  <source src="STRUCT__Slowed__MP3_320K__mp3.mpeg" type="audio/mpeg">
+</audio>
+<script>
+(function(){
+  const audio = document.getElementById('bg-audio');
+  audio.volume = 0.5;
+
+  // Attempt autoplay immediately
+  const tryPlay = () => audio.play().catch(() => {});
+
+  // Try right away
+  tryPlay();
+
+  // Fallback: play on first user interaction (browsers often block autoplay)
+  const unlock = () => {
+    tryPlay();
+    ['click','touchstart','keydown','scroll'].forEach(ev =>
+      document.removeEventListener(ev, unlock)
+    );
+  };
+  ['click','touchstart','keydown','scroll'].forEach(ev =>
+    document.addEventListener(ev, unlock, { once: true, passive: true })
+  );
+})();
+</script>
 </body>
 </html>
