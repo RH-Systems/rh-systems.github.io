@@ -491,8 +491,137 @@ footer{
   color:rgba(168,164,158,.3)!important;
 }
 .phase-note{display:none}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal-stag .mf-block,.reveal-stag .svc-c,.reveal-stag .tc{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal-stag.in .mf-block,.reveal-stag.in .svc-c,.reveal-stag.in .tc{opacity:1;transform:translateY(0)}
+.reveal-stag.in .mf-block:nth-child(1),.reveal-stag.in .svc-c:nth-child(1),.reveal-stag.in .tc:nth-child(1){transition-delay:.05s}
+.reveal-stag.in .mf-block:nth-child(2),.reveal-stag.in .svc-c:nth-child(2),.reveal-stag.in .tc:nth-child(2){transition-delay:.15s}
+.reveal-stag.in .mf-block:nth-child(3),.reveal-stag.in .svc-c:nth-child(3){transition-delay:.25s}
+.reveal-stag.in .mf-block:nth-child(4){transition-delay:.35s}
+@media(prefers-reduced-motion:reduce){
+  .reveal,.reveal-stag .mf-block,.reveal-stag .svc-c,.reveal-stag .tc{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+/* ── MOBILE NAV ── */
+.nav-burger{display:none;flex-direction:column;gap:5px;width:26px;cursor:pointer;background:none;border:none;padding:8px}
+.nav-burger span{display:block;height:2px;width:100%;background:var(--white);transition:transform .3s var(--ease),opacity .3s var(--ease)}
+.nav-burger.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger.on span:nth-child(2){opacity:0}
+.nav-burger.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-l.mob-open{display:flex!important;position:fixed;top:70px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;
+  background:rgba(0,0,0,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);padding:8px 6%}
+.nav-l.mob-open li{width:100%}
+.nav-l.mob-open a{display:block;width:100%;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+
+/* ── AI CHAT WIDGET ── */
+#ai-chat-btn{position:fixed;right:28px;bottom:28px;z-index:9998;width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(150deg,var(--ember2),var(--ember) 55%,#a81c00);border:1px solid rgba(255,255,255,.12);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 30px rgba(255,45,0,.28),0 2px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18);
+  animation:chat-pulse 3.2s ease infinite;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+#ai-chat-btn:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 16px 40px rgba(255,45,0,.38),0 2px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.22)}
+#ai-chat-btn:active{transform:translateY(-1px) scale(1.02)}
+#ai-chat-btn svg{width:23px;height:23px;stroke:var(--void);fill:none;stroke-width:2;position:absolute;transition:opacity .25s var(--ease),transform .35s var(--ease)}
+#ai-chat-btn .ic-x{opacity:0;transform:rotate(-45deg) scale(.5)}
+#ai-chat-btn.open .ic-msg{opacity:0;transform:rotate(45deg) scale(.5)}
+#ai-chat-btn.open .ic-x{opacity:1;transform:none}
+#ai-chat-btn.open{animation:none}
+#ai-chat-btn .badge{position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--neon);
+  color:var(--void);font-size:.56rem;font-weight:700;display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-m);box-shadow:0 0 0 3px var(--void),0 0 10px rgba(0,255,204,.5);transition:transform .3s var(--ease),opacity .25s}
+#ai-chat-btn .badge.hide{transform:scale(0);opacity:0}
+
+#ai-chat-panel{position:fixed;right:28px;bottom:100px;z-index:9999;width:min(392px,92vw);height:min(600px,74vh);
+  background:linear-gradient(180deg,#0c0c17,var(--panel) 60%);
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 0 1px rgba(0,0,0,.4),0 -1px 0 rgba(255,255,255,.03) inset;
+  display:flex;flex-direction:column;overflow:hidden;transform-origin:bottom right;position:fixed;
+  transform:scale(.92) translateY(20px);opacity:0;pointer-events:none;transition:transform .4s var(--ease),opacity .3s var(--ease)}
+#ai-chat-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:2;
+  background:linear-gradient(90deg,transparent,var(--ember),var(--ember3),var(--ember),transparent);
+  background-size:200% 100%;animation:chatBorderFlow 6s linear infinite}
+@keyframes chatBorderFlow{to{background-position:-200% 0}}
+#ai-chat-panel.on{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.chat-head{display:flex;align-items:center;gap:13px;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.07);
+  background:linear-gradient(180deg,rgba(255,45,0,.07),rgba(255,45,0,0) 70%);position:relative;flex-shrink:0}
+.chat-av{width:40px;height:40px;background:var(--ink);border:1px solid rgba(255,45,0,.35);
+  display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;
+  font-family:var(--ff-d);font-size:.95rem;letter-spacing:.02em;color:var(--ember)}
+.chat-av::before{content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(255,45,0,0) 0%,var(--ember) 18%,rgba(255,45,0,0) 40%);
+  animation:av-spin 2.6s linear infinite;opacity:.85}
+.chat-av::after{content:'';position:absolute;inset:0;background:var(--ink);border:1px solid rgba(255,255,255,.06)}
+.chat-av span{position:relative;z-index:1}
+.chat-head-txt{flex:1;min-width:0}
+.chat-head-txt h4{font-family:var(--ff-d);font-size:1.05rem;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.chat-ai-tag{font-family:var(--ff-m);font-size:.5rem;letter-spacing:.14em;color:var(--void);background:var(--neon);
+  padding:2px 6px;font-weight:700;line-height:1.4}
+.chat-status{font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mist);display:flex;align-items:center;gap:6px;margin-top:4px}
+.chat-status .sdot{width:5px;height:5px;border-radius:50%;background:var(--neon);box-shadow:0 0 6px var(--neon);animation:sdot 1.8s ease infinite}
+.chat-close{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--mist);cursor:pointer;
+  width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.95rem;line-height:1;
+  transition:color .2s,border-color .2s,background .2s}
+.chat-close:hover{color:var(--white);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08)}
+#chat-messages{flex:1;overflow-y:auto;padding:20px 18px 6px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;
+  background:
+    linear-gradient(rgba(0,0,0,.15),transparent 40px),
+    radial-gradient(ellipse at 50% 0%,rgba(255,45,0,.04),transparent 60%)}
+#chat-messages::-webkit-scrollbar{width:5px}
+#chat-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.msg-row{display:flex;flex-direction:column;max-width:84%;animation:msgPop .4s var(--ease-out) both}
+.msg-row.user{align-self:flex-end;align-items:flex-end}
+.msg-row.bot{align-self:flex-start;align-items:flex-start}
+.msg{padding:12px 15px;font-size:.815rem;line-height:1.65;letter-spacing:.005em}
+.msg.bot{background:linear-gradient(155deg,#101019,#0b0b13);border:1px solid rgba(255,255,255,.08);border-left:2px solid var(--ember);
+  color:rgba(240,237,232,.92);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.msg.user{background:linear-gradient(135deg,var(--ember2),var(--ember));color:var(--void);
+  font-weight:500;box-shadow:0 4px 14px rgba(255,45,0,.2)}
+.msg-time{font-size:.55rem;letter-spacing:.05em;color:var(--dim);margin-top:5px;padding:0 2px;font-family:var(--ff-m)}
+.msg.bot strong{color:var(--white);font-weight:700}
+.msg.bot button.chat-link{color:var(--ember);text-decoration:underline;text-underline-offset:3px;background:none;border:none;
+  font:inherit;font-weight:600;cursor:pointer;padding:0;transition:color .2s}
+.msg.bot button.chat-link:hover{color:var(--ember3)}
+.chat-quick{display:flex;flex-wrap:wrap;gap:8px;padding:2px 18px 16px;flex-shrink:0}
+.chat-chip{font-family:var(--ff-m);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:8px 13px;
+  border:1px solid rgba(255,255,255,.12);color:var(--mist);background:rgba(255,255,255,.03);cursor:pointer;
+  transition:background .2s,transform .2s,border-color .2s,color .2s}
+.chat-chip:hover{background:rgba(255,45,0,.1);border-color:rgba(255,45,0,.4);color:var(--ember3);transform:translateY(-2px)}
+.chat-typing{align-self:flex-start;display:flex;align-items:center;gap:7px;padding:12px 16px;
+  background:linear-gradient(155deg,#101019,#0b0b13);border:1px solid rgba(255,255,255,.08);border-left:2px solid var(--ember);
+  animation:msgPop .3s var(--ease-out) both;max-width:84%}
+.chat-typing .tlabel{font-size:.62rem;letter-spacing:.04em;color:var(--mist);margin-right:2px}
+.chat-typing .tdots{display:flex;gap:4px}
+.chat-typing span{width:5px;height:5px;border-radius:50%;background:var(--ember);animation:tdot 1.3s ease infinite}
+.chat-typing span:nth-child(2){animation-delay:.15s}
+.chat-typing span:nth-child(3){animation-delay:.3s}
+.chat-input-row{display:flex;align-items:flex-end;gap:10px;padding:15px 16px;border-top:1px solid rgba(255,255,255,.07);
+  background:rgba(0,0,0,.25);flex-shrink:0}
+#chat-input{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:var(--white);font-family:var(--ff-m);
+  font-size:.8rem;padding:12px 14px;resize:none;max-height:90px;transition:border-color .25s,background .25s,box-shadow .25s}
+#chat-input::placeholder{color:var(--dim)}
+#chat-input:focus{outline:none;border-color:rgba(255,45,0,.45);background:rgba(255,255,255,.045);box-shadow:0 0 0 3px rgba(255,45,0,.08)}
+#chat-send{width:42px;height:42px;flex-shrink:0;background:linear-gradient(150deg,var(--ember2),var(--ember));
+  border:1px solid rgba(255,255,255,.12);color:var(--void);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:transform .25s var(--ease),box-shadow .25s;
+  box-shadow:0 4px 14px rgba(255,45,0,.25)}
+#chat-send:hover{transform:scale(1.07) translateY(-1px);box-shadow:0 6px 18px rgba(255,45,0,.35)}
+#chat-send:active{transform:scale(.97)}
+#chat-send:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+#chat-send svg{width:16px;height:16px}
+.chat-foot-note{font-size:.55rem;letter-spacing:.05em;color:var(--dim);text-align:center;padding:0 16px 14px;flex-shrink:0}
+.chat-foot-note b{color:var(--mist)}
+@media(max-width:480px){
+  #ai-chat-panel{right:10px;left:10px;bottom:88px;width:auto;height:min(560px,70vh)}
+  #ai-chat-btn{right:18px;bottom:18px}
+}
+
 @media(max-width:900px){
   .nav-l{display:none}
+  .nav-burger{display:flex}
   .hero-split,.manifesto-grid,.svc-hdr,.team-hdr,.contact-layout,.globe-layout{grid-template-columns:1fr!important}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .svc-grid,.team-grid{grid-template-columns:1fr!important}
@@ -515,6 +644,7 @@ footer{
       <li><a href="https://rh-systems.github.io/projects/" target="_blank" rel="noopener">Projects</a></li>
       <li><a href="#contact" class="nav-cta">Engage</a></li>
     </ul>
+    <button class="nav-burger" id="nav-burger" aria-label="Toggle navigation menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </nav>
 </header>
 
@@ -563,7 +693,7 @@ footer{
   </div>
 </div>
 
-<section id="manifesto">
+<section id="manifesto" class="reveal-stag">
   <div class="W manifesto-grid">
     <div class="mf-vert">RECON</div>
     <div>
@@ -581,14 +711,14 @@ footer{
 
 <section id="services">
   <div class="W">
-    <div class="svc-hdr">
+    <div class="svc-hdr reveal">
       <div>
         <div class="eyebrow"><span></span>01 — Capabilities</div>
         <div class="svc-title">CORE<br><span class="ghost">SERVICES</span></div>
       </div>
       <p class="svc-sub">Three interconnected disciplines forming a complete offensive security posture — from initial exploitation through to long-term defensive architecture.</p>
     </div>
-    <div class="svc-grid">
+    <div class="svc-grid reveal-stag">
       <div class="svc-c">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <div class="svc-id">SVC_001</div>
@@ -616,14 +746,14 @@ footer{
 
 <section id="team">
   <div class="W">
-    <div class="team-hdr">
+    <div class="team-hdr reveal">
       <div class="team-title-wrap">
         <div class="team-eyebrow">02 — Leadership</div>
         <div class="team-big-title">THE<br><span class="team-big-ghost">OPERATORS</span></div>
       </div>
       <p class="team-tagline">Built by engineers who understand both the attack vector and the defense mechanism. Dual expertise. Zero compromise.</p>
     </div>
-    <div class="team-grid">
+    <div class="team-grid reveal-stag">
       <a href="https://rh-systems.github.io/Raj-Hridoy/" target="_blank" rel="noopener noreferrer" class="tc">
         <div class="tc-halo"></div>
         <div class="tc-top">
@@ -782,7 +912,7 @@ footer{
       <div class="eyebrow">04 — Global Intelligence</div>
       <div style="font-family:var(--ff-d);font-size:clamp(3.5rem,8vw,9rem);line-height:.9;letter-spacing:.02em">LIVE THREAT<br><span style="-webkit-text-stroke:1px rgba(255,255,255,.08);-webkit-text-fill-color:transparent"> LANDSCAPE</span></div>
     </div>
-    <div class="globe-layout">
+    <div class="globe-layout reveal">
       <canvas id="globe-cv" aria-label="Global threat map"></canvas>
       <div class="globe-r">
         <p class="globe-desc">Real-time visualization of global cyber threat activity. RH²-Systems monitors attack vectors across 140+ countries to keep clients ahead of emerging threats.</p>
@@ -803,7 +933,7 @@ footer{
       <div class="eyebrow">05 — Contact</div>
       <div style="font-family:var(--ff-d);font-size:clamp(3.5rem,8vw,9rem);line-height:.9;letter-spacing:.02em">SECURE<br><span style="-webkit-text-stroke:1px rgba(255,255,255,.08);-webkit-text-fill-color:transparent"> CONSULTATION</span></div>
     </div>
-    <div class="contact-layout">
+    <div class="contact-layout reveal">
       <div class="cl-l">
         <p>Ready to fortify your infrastructure? Reach out for a confidential discussion about your security posture and threat exposure.</p>
         <div class="c-dets">
@@ -872,6 +1002,35 @@ footer{
     </div>
   </div>
 </footer>
+
+<button id="ai-chat-btn" aria-haspopup="dialog" aria-controls="ai-chat-panel" aria-expanded="false" aria-label="Open AI assistant chat">
+  <svg class="ic-msg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <svg class="ic-x" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <span class="badge" id="chat-badge">1</span>
+</button>
+
+<div id="ai-chat-panel" role="dialog" aria-modal="false" aria-labelledby="chat-title">
+  <div class="chat-head">
+    <div class="chat-av"><span>R²</span></div>
+    <div class="chat-head-txt">
+      <h4 id="chat-title">RH² Assistant<span class="chat-ai-tag">AI</span></h4>
+      <div class="chat-status"><span class="sdot"></span>Online · Responds instantly</div>
+    </div>
+    <button class="chat-close" id="chat-close" aria-label="Close chat">✕</button>
+  </div>
+  <div id="chat-messages"></div>
+  <div class="chat-quick" id="chat-quick">
+    <button class="chat-chip" data-q="What services do you offer?">Services</button>
+    <button class="chat-chip" data-q="How much does an engagement cost?">Pricing</button>
+    <button class="chat-chip" data-q="How do I get in touch?">Contact</button>
+    <button class="chat-chip" data-q="Tell me about the team">The Team</button>
+  </div>
+  <form class="chat-input-row" id="chat-form">
+    <textarea id="chat-input" rows="1" placeholder="Ask about our services…" aria-label="Chat message" autocomplete="off"></textarea>
+    <button type="submit" id="chat-send" aria-label="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </form>
+  <div class="chat-foot-note"><b>Automated assistant</b> · not a substitute for a confidential consult</div>
+</div>
 
 <div id="sov2" role="dialog" aria-modal="true" aria-labelledby="sov2-title">
   <div class="sm2">
@@ -1271,15 +1430,13 @@ tickClock();
             if(geo.timezone){sv('i-tz',geo.timezone);filled.tz=true;}
           }
         }catch(e){}
-        // ── FIRE FIREBASE ASAP — right after IP resolves, no waiting ──
-        window._rh2IpReady&&window._rh2IpReady();
       }
     }catch(e){}
     if(!filled.ip)sv('i-ip','Unavailable');
-    if(!filled.country)sv('i-country',filled.country?'':' Unavailable');
-    if(!filled.city)sv('i-city',filled.city?'':'Unavailable');
-    if(!filled.isp)sv('i-isp',filled.isp?'':'Unavailable');
-    if(!filled.tz)sv('i-tz',filled.tz?'':'Unavailable');
+    if(!filled.country)sv('i-country','Unavailable');
+    if(!filled.city)sv('i-city','Unavailable');
+    if(!filled.isp)sv('i-isp','Unavailable');
+    if(!filled.tz)sv('i-tz','Unavailable');
     const stat=document.getElementById('sc-stat');if(stat){stat.textContent=filled.ip&&filled.country?'COMPLETE':'PARTIAL';stat.style.color=filled.ip&&filled.country?'#28c840':'#ffaa00';}
     // ── BUILD THREAT VERDICT ──
     buildVerdict(filled);
@@ -1428,8 +1585,182 @@ tickClock();
   else{window.addEventListener('load',initGlobe);}
 })();
 
-/* ── AI CHATBOT ── */
+/* ── MOBILE NAV BURGER ── */
+(function(){
+  const btn=document.getElementById('nav-burger');
+  const list=document.querySelector('.nav-l');
+  if(!btn||!list)return;
+  btn.addEventListener('click',()=>{
+    const open=list.classList.toggle('mob-open');
+    btn.classList.toggle('on',open);
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  });
+  list.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    list.classList.remove('mob-open');btn.classList.remove('on');btn.setAttribute('aria-expanded','false');
+  }));
+})();
 
+/* ── SCROLL REVEAL ── */
+(function(){
+  const targets=document.querySelectorAll('.reveal,.reveal-stag');
+  if(!targets.length)return;
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){targets.forEach(t=>t.classList.add('in'));return;}
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}
+    });
+  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+  targets.forEach(t=>obs.observe(t));
+})();
+
+/* ── AI CHATBOT ── */
+(function(){
+  const btn=document.getElementById('ai-chat-btn');
+  const panel=document.getElementById('ai-chat-panel');
+  const closeBtn=document.getElementById('chat-close');
+  const msgsEl=document.getElementById('chat-messages');
+  const form=document.getElementById('chat-form');
+  const input=document.getElementById('chat-input');
+  const sendBtn=document.getElementById('chat-send');
+  const badge=document.getElementById('chat-badge');
+  const quick=document.getElementById('chat-quick');
+  if(!btn||!panel||!form||!input)return;
+
+  let opened=false, seeded=false;
+
+  const KB=[
+    {k:['service','offer','what do you do','capabilit'],
+     a:"We run three core disciplines: <strong>Penetration Testing</strong> (web, mobile, API, cloud), <strong>Red Team Operations</strong> (full adversary simulation), and <strong>Secure Engineering</strong> (DevSecOps, Zero Trust, code review). Want details on any one of those?"},
+    {k:['pentest','penetration'],
+     a:"Penetration testing covers manual + automated assessments of web, mobile, API, and cloud infrastructure, mapped to OWASP Top 10 and NIST. Scope and duration depend on your environment — the fastest way to get a real number is through the contact form."},
+    {k:['red team','adversary','apt'],
+     a:"Red Team engagements simulate nation-state style tactics end-to-end — initial access through to objective — to stress-test your detection and response, not just your perimeter."},
+    {k:['secure engineer','devsecops','zero trust','code review'],
+     a:"Secure Engineering means embedding security into the build itself: DevSecOps pipeline integration, Zero Trust architecture design, and source code review, rather than bolting it on after launch."},
+    {k:['price','cost','pricing','quote','how much','budget'],
+     a:"Pricing depends on scope — attack surface, environment size, and engagement type all factor in. Fill out the contact form with a bit about your infrastructure and we'll get back to you with a real quote, usually within 24 hours."},
+    {k:['contact','email','reach','talk to','get in touch','human'],
+     a:"Easiest path is the <button type=\"button\" class=\"chat-link\" data-scroll=\"#contact\">contact form below</button> — it goes straight to our operators, encrypted in transit, with replies typically inside 24 hours. We also run 24/7 incident support."},
+    {k:['team','who are you','operators','founder'],
+     a:"RH²-Systems is run by <strong>Raj Hridoy</strong> (Cybersecurity Engineer — secure architecture, cloud security) and <strong>Riyad Hasan</strong> (Ethical Hacker — red teaming, exploit development). You can see full profiles in the <button type=\"button\" class=\"chat-link\" data-scroll=\"#team\">Operators section</button>."},
+    {k:['location','where are you','based'],
+     a:"We're based in Rajshahi Division, Bangladesh, and work with clients globally."},
+    {k:['available','availability','support','24/7','hours'],
+     a:"24/7 incident support, always. Standard engagement replies land within 24 hours."},
+    {k:['confidential','nda','privacy','safe'],
+     a:"100% confidentiality is a standing operational commitment, not a marketing line — every engagement is covered under NDA by default."},
+    {k:['hi','hello','hey','sup','yo'],
+     a:"Hey — I'm the RH²-SYS assistant. Ask me about our services, pricing, the team, or how to get in touch."},
+    {k:['thank','thanks','cheers'],
+     a:"Anytime. Anything else I can pull up for you?"},
+    {k:['bug','hack me','exploit me','vulnerab'],
+     a:"If you're here to report a vulnerability in this site or a client asset, please use the contact form and mark it urgent — we take that seriously and respond fast."}
+  ];
+  function reply(text){
+    const t=text.toLowerCase();
+    for(const row of KB){ if(row.k.some(k=>t.includes(k))) return row.a; }
+    return "I don't have a canned answer for that one. For anything specific to your environment, the fastest route is the <button type=\"button\" class=\"chat-link\" data-scroll=\"#contact\">contact form</button> — a human operator will follow up directly.";
+  }
+
+  function scrollTo(sel){
+    const target=document.querySelector(sel);
+    if(!target)return;
+    const top=target.getBoundingClientRect().top+window.scrollY-70;
+    window.scrollTo({top,behavior:'smooth'});
+  }
+
+  function timeNow(){
+    return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  }
+  function addMsg(html,who){
+    const row=document.createElement('div');
+    row.className='msg-row '+who;
+    const bubble=document.createElement('div');
+    bubble.className='msg '+who;
+    bubble.innerHTML=html;
+    const time=document.createElement('div');
+    time.className='msg-time';
+    time.textContent=(who==='bot'?'RH² Assistant · ':'You · ')+timeNow();
+    row.appendChild(bubble);row.appendChild(time);
+    msgsEl.appendChild(row);
+    msgsEl.scrollTop=msgsEl.scrollHeight;
+    return row;
+  }
+  function addTyping(){
+    const el=document.createElement('div');
+    el.className='chat-typing';
+    el.innerHTML='<span class="tlabel">Assistant is typing</span><span class="tdots"><span></span><span></span><span></span></span>';
+    msgsEl.appendChild(el);
+    msgsEl.scrollTop=msgsEl.scrollHeight;
+    return el;
+  }
+  function botSay(text,delay){
+    const typing=addTyping();
+    return new Promise(res=>{
+      setTimeout(()=>{
+        typing.remove();
+        addMsg(text,'bot');
+        res();
+      },delay||600+Math.random()*500);
+    });
+  }
+
+  function openPanel(){
+    opened=true;
+    panel.classList.add('on');btn.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+    badge.classList.add('hide');
+    if(!seeded){
+      seeded=true;
+      botSay("Hey — welcome to RH²-Systems. I'm the automated assistant. Ask about our services, pricing, the team, or how to reach a human operator.",500);
+    }
+    setTimeout(()=>input.focus(),350);
+  }
+  function closePanel(){
+    opened=false;
+    panel.classList.remove('on');btn.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  btn.addEventListener('click',()=>{ opened?closePanel():openPanel(); });
+  closeBtn.addEventListener('click',closePanel);
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&opened)closePanel(); });
+
+  msgsEl.addEventListener('click',e=>{
+    const l=e.target.closest('.chat-link');
+    if(l&&l.dataset.scroll){ closePanel(); scrollTo(l.dataset.scroll); }
+  });
+
+  quick.addEventListener('click',e=>{
+    const chip=e.target.closest('.chat-chip');
+    if(!chip)return;
+    handleUserMessage(chip.dataset.q);
+  });
+
+  function autoGrow(){
+    input.style.height='auto';
+    input.style.height=Math.min(input.scrollHeight,90)+'px';
+  }
+  input.addEventListener('input',autoGrow);
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); form.requestSubmit(); }
+  });
+
+  function handleUserMessage(text){
+    text=(text||'').trim();
+    if(!text)return;
+    addMsg(text.replace(/</g,'&lt;'),'user');
+    input.value='';autoGrow();
+    sendBtn.disabled=true;
+    botSay(reply(text)).then(()=>{ sendBtn.disabled=false; });
+  }
+
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    handleUserMessage(input.value);
+  });
+})();
 
 /* ── SMOOTH ANCHOR SCROLLING ── */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id==='#')return;const target=document.querySelector(id);if(target){e.preventDefault();const offset=70;const top=target.getBoundingClientRect().top+window.scrollY-offset;window.scrollTo({top,behavior:'smooth'});}});});
